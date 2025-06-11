@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.nullved.pmweatherapi.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "pmweatherapi.refmap.json",
+  "mixins": [
+    "BlockBehaviourMixin",
+    "PacketNBTFromClientMixin"
+  ],
+  "client": [
+    "RadarRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

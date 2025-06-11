@@ -1,0 +1,6 @@
+{
+  "itemGroup.pmweatherapi": "Example Mod Tab",
+  "block.pmweatherapi.example_block": "Example Block",
+  "item.pmweatherapi.example_item": "Example Item",
+  "commands.pmweatherapi.non_player": "You must be a player to execute this command!"
+}
