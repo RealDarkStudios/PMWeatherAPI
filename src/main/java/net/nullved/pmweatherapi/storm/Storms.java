@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Get all the storms within a given radius around a {@link BlockPos} or {@link ChunkPos}
+ */
 public class Storms {
     private static final HashMap<ResourceKey<Level>, Storms> DIMENSION_MAP = new HashMap<>();
     private final WeatherHandler handler;
@@ -22,10 +25,20 @@ public class Storms {
         this.handler = handler;
     }
 
+    /**
+     * Get {@link Storms} for the given dimension
+     * @param dim The {@link ResourceKey} of the dimension
+     * @return A {@link Storms} instance
+     */
     public static Storms get(ResourceKey<Level> dim) {
         return DIMENSION_MAP.computeIfAbsent(dim, d -> new Storms(GameBusEvents.MANAGERS.get(d)));
     }
 
+    /**
+     * Get {@link Storms} for the given level
+     * @param level The {@link Level} with the storms
+     * @return A {@link Storms} instance
+     */
     public static Storms get(Level level) {
         return get(level.dimension());
     }

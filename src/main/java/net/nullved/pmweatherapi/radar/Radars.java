@@ -9,6 +9,9 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Gets and manages all the radars for a given dimension
+ */
 public class Radars {
     private static final HashMap<ResourceKey<Level>, Radars> DIMENSION_MAP = new HashMap<>();
 

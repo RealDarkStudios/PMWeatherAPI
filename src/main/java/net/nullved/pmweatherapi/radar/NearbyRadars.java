@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+/**
+ * Get all the radars within a given radius around a {@link BlockPos} or {@link ChunkPos}
+ */
 public class NearbyRadars {
     /**
      * Returns a {@link Set} of the {@link BlockPos} of {@link RadarBlock}s in a defined radius around the block

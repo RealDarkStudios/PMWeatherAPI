@@ -3,7 +3,6 @@ package net.nullved.pmweatherapi.radar;
 import com.google.gson.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +12,6 @@ import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.fml.loading.FMLPaths;
 import net.nullved.pmweatherapi.PMWeatherAPI;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,11 +23,20 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Saves all the radars to a file to be saved and loaded from
+ */
 public class RadarStorage {
     private static final String DATA_FOLDER = "data/pmweatherapi";
     private static final String DATA_FILE = "radars.json";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
+    /**
+     * Reads all radars from a save or server
+     * <br>
+     * For each dimension ({@link ResourceKey<Level>}), there is a {@link Map} mapping a {@link ChunkPos} to all the saved radar's {@link BlockPos}'s
+     * @return All saved radars across all dimensions
+     */
     public static Map<ResourceKey<Level>, Map<ChunkPos, Set<BlockPos>>> readAllRadars() {
         Radars.clear();
         Map<ResourceKey<Level>, Map<ChunkPos, Set<BlockPos>>> dimensionToRadar = new HashMap<>();
@@ -74,6 +81,9 @@ public class RadarStorage {
         return dimensionToRadar;
     }
 
+    /**
+     * Saves all radars to data/pmweatherapi/radars.json
+     */
     public static void saveAllRadars() {
         try {
             Path worldDir = getWorldSaveDirectory();
