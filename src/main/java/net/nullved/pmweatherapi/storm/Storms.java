@@ -4,20 +4,30 @@ import dev.protomanly.pmweather.event.GameBusEvents;
 import dev.protomanly.pmweather.weather.Storm;
 import dev.protomanly.pmweather.weather.WeatherHandler;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class Storms {
-    public static final Storms INSTANCE = new Storms();
-    private WeatherHandler handler;
+    private static final HashMap<ResourceKey<Level>, Storms> DIMENSION_MAP = new HashMap<>();
+    private final WeatherHandler handler;
 
-    private Storms() {
-        handler = GameBusEvents.MANAGERS.get(Level.OVERWORLD);
+    private Storms(WeatherHandler handler) {
+        this.handler = handler;
+    }
+
+    public static Storms get(ResourceKey<Level> dim) {
+        return DIMENSION_MAP.computeIfAbsent(dim, d -> new Storms(GameBusEvents.MANAGERS.get(d)));
+    }
+
+    public static Storms get(Level level) {
+        return get(level.dimension());
     }
 
     /**

@@ -17,8 +17,6 @@ public class PMWeatherAPI {
         LOGGER.info("Initializing PMWAPI...");
         modEventBus.addListener(this::commonSetup);
 
-        // RadarOverlays.registerOverlay(ResourceLocation.fromNamespaceAndPath(MODID, "radars"), TestOverlay::render);
-
         LOGGER.info("Initialized PMWAPI");
     }
 
