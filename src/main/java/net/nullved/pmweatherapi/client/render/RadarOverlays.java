@@ -19,6 +19,9 @@ import java.util.function.Supplier;
 public class RadarOverlays {
     private static final HashSet<Supplier<? extends IRadarOverlay>> OVERLAYS = new HashSet<>();
 
+    /**
+     * @return The {@link Set} of all overlay instances to render to
+     */
     public static Set<Supplier<? extends IRadarOverlay>> getOverlays() {
         return OVERLAYS;
     }

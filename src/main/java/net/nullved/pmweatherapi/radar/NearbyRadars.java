@@ -5,39 +5,74 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.nullved.pmweatherapi.client.data.PMWClientStorages;
+import net.nullved.pmweatherapi.data.PMWStorages;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
 /**
  * Get all the radars within a given radius around a {@link BlockPos} or {@link ChunkPos}
+ * @since 0.14.15.0
  */
 public class NearbyRadars {
+    private static final HashMap<ResourceKey<Level>, NearbyRadars> DIMENSION_MAP = new HashMap<>();
+    private final RadarStorage storage;
+
     /**
-     * Returns a {@link Set} of the {@link BlockPos} of {@link RadarBlock}s in a defined radius around the block
-     * @param level The {@link Level} to search
-     * @param pos The {@link BlockPos} of the block at the center of the search area
-     * @param radius The radius of the search area
-     * @return A {@link Set} of {@link BlockPos}
-     * @since 0.14.15.0
+     * Creates a {@link NearbyRadars} instance for the given {@link RadarStorage}
+     * @param storage The {@link RadarStorage} to get radars from
+     * @since 0.14.15.3
      */
-    public static Set<BlockPos> radarsNearBlock(Level level, BlockPos pos, double radius) {
-        return radarsNearBlock(level.dimension(), pos, radius);
+    private NearbyRadars(RadarStorage storage) {
+        this.storage = storage;
+    }
+
+    /**
+     * Get the {@link NearbyRadars} instance for the client
+     * @return The client-specific {@link NearbyRadars} instance
+     * @since 0.14.15.3
+     */
+    @OnlyIn(Dist.CLIENT)
+    public static NearbyRadars client() {
+        return new NearbyRadars(PMWClientStorages.getRadars());
+    }
+
+    /**
+     * Get {@link NearbyRadars} for the given dimension
+     * @param dim The {@link ResourceKey} of the dimension
+     * @return A {@link NearbyRadars} instance
+     * @since 0.14.15.3
+     */
+    public static NearbyRadars get(ResourceKey<Level> dim) {
+        return DIMENSION_MAP.computeIfAbsent(dim, d -> new NearbyRadars(PMWStorages.getRadar(d)));
+    }
+
+    /**
+     * Get {@link NearbyRadars} for the given level
+     * @param level The {@link Level} with the storms
+     * @return A {@link NearbyRadars} instance
+     * @since 0.14.15.3
+     */
+    public static NearbyRadars get(Level level) {
+        return get(level.dimension());
     }
 
     /**
      * Returns a {@link Set} of the {@link BlockPos} of {@link RadarBlock}s in a defined radius around the block
-     * @param level The {@link ResourceKey} for the {@link Level} to search
      * @param pos The {@link BlockPos} of the block at the center of the search area
      * @param radius The radius of the search area
-     * @return A {@link Set} of {@link BlockPos}
+     * @return A {@link Set} of {@link BlockPos} around, but not including, the given {@link BlockPos}
      * @since 0.14.15.1
      */
-    public static Set<BlockPos> radarsNearBlock(ResourceKey<Level> level, BlockPos pos, double radius) {
+    public Set<BlockPos> radarsNearBlock(BlockPos pos, double radius) {
         Set<BlockPos> radarList = new HashSet<>();
 
-        for (BlockPos radar: Radars.get(level).getRadars()) {
+        for (BlockPos radar: storage.getAllRadars()) {
             if (radar.distToCenterSqr(pos.getX(), pos.getY(), pos.getZ()) <= radius * radius)  radarList.add(radar);
         }
 
@@ -48,28 +83,15 @@ public class NearbyRadars {
 
     /**
      * Returns a {@link Set} of the {@link BlockPos} of {@link RadarBlock}s in a defined radius around the center of the chunk
-     * @param level The {@link Level} to search
-     * @param pos The {@link ChunkPos} of the chunk
-     * @param radius The radius of the search area
-     * @return A {@link Set} of {@link BlockPos}
-     * @since 0.14.15.0
-     */
-    public static Set<BlockPos> radarsNearChunk(Level level, ChunkPos pos, double radius) {
-        return radarsNearChunk(level.dimension(), pos, radius);
-    }
-
-    /**
-     * Returns a {@link Set} of the {@link BlockPos} of {@link RadarBlock}s in a defined radius around the center of the chunk
-     * @param level The {@link ResourceKey} for the{@link Level} to search
      * @param pos The {@link ChunkPos} of the chunk
      * @param radius The radius of the search area
      * @return A {@link Set} of {@link BlockPos}
      * @since 0.14.15.1
      */
-    public static Set<BlockPos> radarsNearChunk(ResourceKey<Level> level, ChunkPos pos, double radius) {
+    public Set<BlockPos> radarsNearChunk(ChunkPos pos, double radius) {
         Set<BlockPos> radarList = new HashSet<>();
 
-        for (BlockPos radar: Radars.get(level).getRadars()) {
+        for (BlockPos radar: storage.getAllRadars()) {
             if (radar.distToCenterSqr(pos.getMiddleBlockX(), radar.getY(), pos.getMiddleBlockZ()) <= radius * radius)  radarList.add(radar);
         }
 
@@ -78,53 +100,27 @@ public class NearbyRadars {
 
     /**
      * Executes the given {@link Consumer} for each {@link BlockPos} of a {@link RadarBlock} in a defined radius around the block
-     * @param level The {@link Level} to search
-     * @param block The {@link BlockPos} of the block at the center of the search area
-     * @param radius The radius of the search area
-     * @param consumer The {@link Consumer} to execute for each {@link BlockPos}
-     * @since 0.14.15.0
-     */
-    public static void forRadarNearBlock(Level level, BlockPos block, double radius, Consumer<BlockPos> consumer) {
-        Set<BlockPos> radars = radarsNearBlock(level, block, radius);
-        for (BlockPos radar: radars) consumer.accept(radar);
-    }
-
-    /**
-     * Executes the given {@link Consumer} for each {@link BlockPos} of a {@link RadarBlock} in a defined radius around the block
-     * @param level The {@link ResourceKey} of a {@link Level} to search
      * @param block The {@link BlockPos} of the block at the center of the search area
      * @param radius The radius of the search area
      * @param consumer The {@link Consumer} to execute for each {@link BlockPos}
      * @since 0.14.15.1
      */
-    public static void forRadarNearBlock(ResourceKey<Level> level, BlockPos block, double radius, Consumer<BlockPos> consumer) {
-        Set<BlockPos> radars = radarsNearBlock(level, block, radius);
+    public void forRadarNearBlock(BlockPos block, double radius, Consumer<BlockPos> consumer) {
+        Set<BlockPos> radars = radarsNearBlock(block, radius);
         for (BlockPos radar: radars) consumer.accept(radar);
     }
 
     /**
      * Executes the given {@link Consumer} for each {@link BlockPos} of a {@link RadarBlock} in a defined radius around the center of the chunk
-     * @param level The {@link Level} to search
      * @param chunk The {@link ChunkPos} of the chunk at the center of the search area.
      * @param radius The radius of the search area
      * @param consumer The {@link Consumer} to execute for each {@link BlockPos}
      * @since 0.14.15.0
      */
-    public static void forRadarNearChunk(Level level, ChunkPos chunk, double radius, Consumer<BlockPos> consumer) {
-        Set<BlockPos> radars = radarsNearChunk(level, chunk, radius);
+    public void forRadarNearChunk(ChunkPos chunk, double radius, Consumer<BlockPos> consumer) {
+        Set<BlockPos> radars = radarsNearChunk(chunk, radius);
         for (BlockPos radar: radars) consumer.accept(radar);
     }
 
-    /**
-     * Executes the given {@link Consumer} for each {@link BlockPos} of a {@link RadarBlock} in a defined radius around the center of the chunk
-     * @param level The {@link ResourceKey} of a {@link Level} to search
-     * @param chunk The {@link ChunkPos} of the chunk at the center of the search area.
-     * @param radius The radius of the search area
-     * @param consumer The {@link Consumer} to execute for each {@link BlockPos}
-     * @since 0.14.15.0
-     */
-    public static void forRadarNearChunk(ResourceKey<Level> level, ChunkPos chunk, double radius, Consumer<BlockPos> consumer) {
-        Set<BlockPos> radars = radarsNearChunk(level, chunk, radius);
-        for (BlockPos radar: radars) consumer.accept(radar);
-    }
+
 }

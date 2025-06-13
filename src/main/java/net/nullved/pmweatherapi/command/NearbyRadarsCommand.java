@@ -44,7 +44,7 @@ public class NearbyRadarsCommand {
         };
 
         long startTimeMillis = System.currentTimeMillis();
-        Set<BlockPos> blocks = NearbyRadars.radarsNearBlock(plr.level(), plr.blockPosition(), radius);
+        Set<BlockPos> blocks = NearbyRadars.get(plr.level()).radarsNearBlock(plr.blockPosition(), radius);
         long elapsedTime = System.currentTimeMillis() - startTimeMillis;
 
         StringBuilder sb = new StringBuilder("Found ").append(blocks.size()).append(" radars in ").append(elapsedTime / 1000.0F).append("s");

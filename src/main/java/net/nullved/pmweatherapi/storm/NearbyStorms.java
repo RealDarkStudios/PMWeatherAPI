@@ -1,5 +1,6 @@
 package net.nullved.pmweatherapi.storm;
 
+import dev.protomanly.pmweather.event.GameBusClientEvents;
 import dev.protomanly.pmweather.event.GameBusEvents;
 import dev.protomanly.pmweather.weather.Storm;
 import dev.protomanly.pmweather.weather.WeatherHandler;
@@ -16,30 +17,45 @@ import java.util.function.Consumer;
 
 /**
  * Get all the storms within a given radius around a {@link BlockPos} or {@link ChunkPos}
+ * @since 0.14.15.0
  */
-public class Storms {
-    private static final HashMap<ResourceKey<Level>, Storms> DIMENSION_MAP = new HashMap<>();
+public class NearbyStorms {
+    private static final HashMap<ResourceKey<Level>, NearbyStorms> DIMENSION_MAP = new HashMap<>();
     private final WeatherHandler handler;
 
-    private Storms(WeatherHandler handler) {
+    /**
+     * Creates a {@link NearbyStorms} instance for the given {@link WeatherHandler}
+     * @param handler The {@link WeatherHandler} to get radars from
+     * @since 0.14.15.2
+     */
+    private NearbyStorms(WeatherHandler handler) {
         this.handler = handler;
     }
 
     /**
-     * Get {@link Storms} for the given dimension
-     * @param dim The {@link ResourceKey} of the dimension
-     * @return A {@link Storms} instance
+     * Get the {@link NearbyStorms} instance for the client
+     * @return The client-specific {@link NearbyStorms} instance
+     * @since 0.14.15.3
      */
-    public static Storms get(ResourceKey<Level> dim) {
-        return DIMENSION_MAP.computeIfAbsent(dim, d -> new Storms(GameBusEvents.MANAGERS.get(d)));
+    public static NearbyStorms client() {
+        return new NearbyStorms(GameBusClientEvents.getClientWeather());
     }
 
     /**
-     * Get {@link Storms} for the given level
-     * @param level The {@link Level} with the storms
-     * @return A {@link Storms} instance
+     * Get {@link NearbyStorms} for the given dimension
+     * @param dim The {@link ResourceKey} of the dimension
+     * @return A {@link NearbyStorms} instance
      */
-    public static Storms get(Level level) {
+    public static NearbyStorms get(ResourceKey<Level> dim) {
+        return DIMENSION_MAP.computeIfAbsent(dim, d -> new NearbyStorms(GameBusEvents.MANAGERS.get(d)));
+    }
+
+    /**
+     * Get {@link NearbyStorms} for the given level
+     * @param level The {@link Level} with the storms
+     * @return A {@link NearbyStorms} instance
+     */
+    public static NearbyStorms get(Level level) {
         return get(level.dimension());
     }
 
