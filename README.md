@@ -1,5 +1,8 @@
 ![PMWeatherAPI Logo](https://cdn.modrinth.com/data/cached_images/f7b06beba44c5d08763305f5a0c3480611610230.png)
 
+## Support
+You can get support on my discord server [here](https://discord.gg/B6YKNVB6pW)!
+
 ## About
 PMWeatherAPI is an **Unofficial** API designed to make interacting with [ProtoManly's Weather Mod](https://modrinth.com/mod/protomanlys-weather/) easier for those wishing to create addons for PMWeather.
 
