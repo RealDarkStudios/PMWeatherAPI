@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.nullved.pmweatherapi.client.data.PMWClientStorages;
-import net.nullved.pmweatherapi.data.PMWStorages;
 import net.nullved.pmweatherapi.network.S2CRadarsPacket;
 import net.nullved.pmweatherapi.radar.RadarStorage;
 

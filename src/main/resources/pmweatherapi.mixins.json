@@ -6,10 +6,12 @@
   "refmap": "pmweatherapi.refmap.json",
   "mixins": [
     "BlockBehaviourMixin",
-    "PacketNBTFromClientMixin"
+    "PacketNBTFromClientMixin",
+    "StormMixin"
   ],
   "client": [
-    "RadarRendererMixin"
+    "RadarRendererMixin",
+    "WeatherHandlerClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

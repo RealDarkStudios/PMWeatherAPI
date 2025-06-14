@@ -3,6 +3,7 @@ package net.nullved.pmweatherapi.client.render;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.nullved.pmweatherapi.PMWeatherAPI;
 
@@ -28,19 +29,13 @@ public class RadarOverlays {
 
     /**
      * Renders all overlays
-     * @param blockEntity The {@link BlockEntity} associated with the render call
-     * @param partialTicks The time, in partial ticks, since last full tick
-     * @param poseStack The {@link PoseStack}
-     * @param multiBufferSource The {@link MultiBufferSource}
-     * @param combinedLightIn The current light value on the block entity
-     * @param combinedOverlayIn The current overlay of the block entity
+     * @param canRender {@code true} if either the server doesn't require WSR-88D or a WSR-88D is complete within 4 chunks of the radar
+     * @param renderData The data used to call {@link BlockEntityRenderer#render(BlockEntity, float, PoseStack, MultiBufferSource, int, int)}
      * @param bufferBuilder The {@link BufferBuilder} to render overlays to
      * @since 0.14.15.0
      */
-    public static void renderOverlays(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLightIn, int combinedOverlayIn, BufferBuilder bufferBuilder) {
-        RenderData renderData = new RenderData(blockEntity, partialTicks, poseStack, multiBufferSource, combinedLightIn, combinedOverlayIn);
-
-        OVERLAYS.forEach(overlay -> overlay.get().render(renderData, bufferBuilder));
+    public static void renderOverlays(RenderData renderData, BufferBuilder bufferBuilder, boolean canRender) {
+        OVERLAYS.forEach(overlay -> overlay.get().render(canRender, renderData, bufferBuilder));
     }
 
     /**

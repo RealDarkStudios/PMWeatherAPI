@@ -6,6 +6,8 @@ import dev.protomanly.pmweather.config.ClientConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.nullved.pmweatherapi.PMWeatherAPI;
 import net.nullved.pmweatherapi.client.render.IRadarOverlay;
 import net.nullved.pmweatherapi.client.render.RenderData;
@@ -14,13 +16,16 @@ import net.nullved.pmweatherapi.storm.NearbyStorms;
 import org.joml.Vector3f;
 
 /**
- * This is an example overlay that draws a dot at every nearby radar's position
+ * This is an example overlay that draws a dot at every lightning strike and fades out
+ * @see IRadarOverlay
  */
+@OnlyIn(Dist.CLIENT)
 public class ExampleOverlay implements IRadarOverlay {
     public static final ExampleOverlay INSTANCE = new ExampleOverlay();
 
     @Override
-    public void render(RenderData renderData, BufferBuilder bufferBuilder) {
+    public void render(boolean canRender, RenderData renderData, BufferBuilder bufferBuilder) {
+        if (!canRender) return;
         BlockEntity blockEntity = renderData.blockEntity();
         BlockPos pos = blockEntity.getBlockPos();
         RadarBlock.Mode mode = blockEntity.getBlockState().getValue(RadarBlock.RADAR_MODE);
@@ -45,7 +50,7 @@ public class ExampleOverlay implements IRadarOverlay {
         Vector3f bottomLeft = (new Vector3f(-1.0F, 0.0F, 1.0F)).mul(0.015F).add(radarPos.x, 0.005F, radarPos.z);
         Vector3f bottomRight = (new Vector3f(1.0F, 0.0F, 1.0F)).mul(0.015F).add(radarPos.x, 0.005F, radarPos.z);
         Vector3f topRight = (new Vector3f(1.0F, 0.0F, -1.0F)).mul(0.015F).add(radarPos.x, 0.005F, radarPos.z);
-        int color = 0xFF777777;
+        int color = 0xFFAAAAAA;
         bufferBuilder.addVertex(topLeft).setColor(color).addVertex(bottomLeft).setColor(color).addVertex(bottomRight).setColor(color).addVertex(topRight).setColor(color);
     }
 }

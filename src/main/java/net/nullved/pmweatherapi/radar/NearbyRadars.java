@@ -3,6 +3,7 @@ package net.nullved.pmweatherapi.radar;
 import dev.protomanly.pmweather.block.RadarBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -99,6 +100,24 @@ public class NearbyRadars {
     }
 
     /**
+     * Returns a {@link Set} of the {@link BlockPos} of {@link RadarBlock}s in a defined radius around the {@link Player}
+     * @param player The {@link Player} to search around
+     * @param radius The radius of the search area
+     * @return A {@link Set} of {@link BlockPos} around, but not including, the given {@link BlockPos}
+     * @since 0.14.15.4
+     */
+    public Set<BlockPos> radarsNearPlayer(Player player, double radius) {
+        Set<BlockPos> radarList = new HashSet<>();
+
+        for (BlockPos radar: storage.getAllRadars()) {
+            if (radar.distToCenterSqr(player.getX(), player.getY(), player.getZ()) <= radius * radius)  radarList.add(radar);
+        }
+
+        return radarList;
+    }
+
+
+    /**
      * Executes the given {@link Consumer} for each {@link BlockPos} of a {@link RadarBlock} in a defined radius around the block
      * @param block The {@link BlockPos} of the block at the center of the search area
      * @param radius The radius of the search area
@@ -122,5 +141,15 @@ public class NearbyRadars {
         for (BlockPos radar: radars) consumer.accept(radar);
     }
 
-
+    /**
+     * Executes the given {@link Consumer} for each {@link BlockPos} of a {@link RadarBlock} in a defined radius around the {@link Player}
+     * @param player The {@link Player} to search around
+     * @param radius The radius of the search area
+     * @param consumer The {@link Consumer} to execute for each {@link BlockPos}
+     * @since 0.14.15.4
+     */
+    public void forRadarNearPlayer(Player player, double radius, Consumer<BlockPos> consumer) {
+        Set<BlockPos> radars = radarsNearPlayer(player, radius);
+        for (BlockPos radar: radars) consumer.accept(radar);
+    }
 }

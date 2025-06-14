@@ -17,7 +17,7 @@ import net.nullved.pmweatherapi.client.data.PMWClientStorages;
  * @since 0.14.15.3
  */
 public record S2CRadarsPacket(CompoundTag tag) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<S2CRadarsPacket> TYPE = new CustomPacketPayload.Type<S2CRadarsPacket>(PMWeatherAPI.rl("s2c_" + PMWNetworking.RADARS_ID));
+    public static final CustomPacketPayload.Type<S2CRadarsPacket> TYPE = new CustomPacketPayload.Type<>(PMWeatherAPI.rl("s2c_radars"));
     public static final StreamCodec<RegistryFriendlyByteBuf, S2CRadarsPacket> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.COMPOUND_TAG, S2CRadarsPacket::tag, S2CRadarsPacket::new);
 
     /**

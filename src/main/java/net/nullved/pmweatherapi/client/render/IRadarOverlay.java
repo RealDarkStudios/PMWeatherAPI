@@ -9,17 +9,18 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * An interface defining a radar overlay
- * To implement this, you must override {@link #render(RenderData, BufferBuilder)} and {@link #getModID()}
+ * To implement this, you must override {@link #render(boolean, RenderData, BufferBuilder)} and {@link #getModID()}
  * @since 0.14.15.2
  */
 public interface IRadarOverlay {
     /**
      * Renders objects on top of the radar
+     * @param canRender {@code true} if either the server doesn't require WSR-88D or a WSR-88D is complete within 4 chunks of the radar
      * @param renderData The data used to call {@link BlockEntityRenderer#render(BlockEntity, float, PoseStack, MultiBufferSource, int, int)}
      * @param bufferBuilder The {@link BufferBuilder} that gets drawn to the radar
      * @since 0.14.15.2
      */
-    void render(RenderData renderData, BufferBuilder bufferBuilder);
+    void render(boolean canRender, RenderData renderData, BufferBuilder bufferBuilder);
 
     /**
      * @return The Mod ID of the mod that registered this overlay

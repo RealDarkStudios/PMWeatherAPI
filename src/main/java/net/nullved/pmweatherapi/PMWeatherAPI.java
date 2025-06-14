@@ -25,7 +25,7 @@ public class PMWeatherAPI {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerPayloads);
 
-        //modEventBus.addListener(this::clientSetup);
+        // modEventBus.addListener(this::clientSetup);
 
         LOGGER.info("Initialized PMWAPI");
     }
