@@ -1,23 +1,30 @@
 ![PMWeatherAPI Logo](https://cdn.modrinth.com/data/cached_images/f7b06beba44c5d08763305f5a0c3480611610230.png)
 
 ## Support
-You can get support on my discord server [here](https://discord.gg/B6YKNVB6pW)!
+
+Need help? Join the Discord server [here](https://discord.gg/B6YKNVB6pW)!
 
 ## About
-PMWeatherAPI is an **Unofficial** API designed to make interacting with [ProtoManly's Weather Mod](https://modrinth.com/mod/protomanlys-weather/) easier for those wishing to create addons for PMWeather.
 
-Current Features include:
-- Nearby Storm Detection
-- Nearby Radar Detection
-- Radar Overlays
+![pmweatherapi](https://img.shields.io/maven-metadata/v?label=pmweatherapi\&metadataUrl=https://maven.digitalunderworlds.com/snapshots/net/nullved/pmweatherapi/maven-metadata.xml)
 
-This API is currently experimental (due to PMWeather being in alpha) and bugs are to be expected
-The API will try to keep up to date with PMWeather as much as possible.
+**PMWeatherAPI** is an **unofficial** API designed to simplify interacting with [ProtoManly's Weather Mod](https://modrinth.com/mod/protomanlys-weather/) for those who want to create addons.
 
-Please only use the version of the API compatible with your PMWeather version (for example, 0.14.15.0 is compatible with PMWeather 0.14.15-alpha, but not necessarily with other versions)
+### Current features:
 
-## Adding to your project
+* Nearby storm detection
+* Nearby radar detection
+* Radar overlays
+
+> ⚠️ This API is currently experimental due to PMWeather still being in alpha. Bugs should be expected.
+> The API will aim to stay updated with PMWeather as closely as possible.
+
+Make sure you only use the API version that matches your PMWeather version (e.g., `0.14.15.0` works with `PMWeather 0.14.15-alpha` but may not work with other versions).
+
+## Adding to Your Project
+
 In your `build.gradle`, add the following:
+
 ```groovy
 repositories {
   maven {
@@ -31,4 +38,4 @@ dependencies {
 }
 ```
 
-To use the features of the mod, check out the [wiki](https://github.com/RealDarkStudios/PMWeatherAPI/wiki/)!
+For usage examples and more details, check out the [wiki](https://github.com/RealDarkStudios/PMWeatherAPI/wiki/).
