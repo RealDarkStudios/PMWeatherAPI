@@ -7,6 +7,9 @@
 
 # IntelliJ
 out/
+# vscode
+.vscode/
+
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
@@ -102,6 +105,7 @@ $RECYCLE.BIN/
 
 .gradle
 build/
+bin/
 
 # Ignore Gradle GUI config
 gradle-app.setting
