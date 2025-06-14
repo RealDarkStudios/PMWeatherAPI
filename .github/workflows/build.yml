@@ -40,23 +40,29 @@ jobs:
     - name: Generate Javadoc
       run: ./gradlew javadoc
       
-    - name: Upload build artifacts
+    - name: Upload main artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Package
-        path: build/libs
+        name: pmweatherapi
+        path: build/libs/*[!-javadoc][!-sources].jar
         
+    - name: Upload sources
+      uses: actions/upload-artifact@v4
+      with:
+        name: pmweatherapi-sources
+        path: build/libs/*-sources.jar
+        
+    - name: Upload Javadoc
+      uses: actions/upload-artifact@v4
+      with:
+        name: pmweatherapi-javadoc
+        path: build/libs/*-javadoc.jar
+      
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: Test Results
+        name: test-results
         path: |
           build/reports/tests/
-          build/test-results/
-          
-    - name: Upload Javadoc
-      uses: actions/upload-artifact@v4
-      with:
-        name: Javadoc
-        path: build/docs/javadoc/ 
+          build/test-results/ 
