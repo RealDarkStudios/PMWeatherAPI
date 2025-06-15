@@ -6,6 +6,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.nullved.pmweatherapi.PMWeatherAPI;
 import net.nullved.pmweatherapi.client.radar.RadarClientStorage;
+import net.nullved.pmweatherapi.radar.RadarMode;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A class holding the specific storage instances for the client
@@ -13,6 +18,12 @@ import net.nullved.pmweatherapi.client.radar.RadarClientStorage;
  */
 @OnlyIn(Dist.CLIENT)
 public class PMWClientStorages {
+    /**
+     * A {@link Map} of {@link RadarMode}s to {@link Map}s of pixel ids and their {@link Color}
+     * @since 0.14.15.6
+     */
+    public static Map<RadarMode, Map<Integer, Color>> RADAR_MODE_COLORS = new HashMap<>();
+
     private static Level lastLevel;
     private static RadarClientStorage radar;
 

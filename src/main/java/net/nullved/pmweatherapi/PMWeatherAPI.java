@@ -25,15 +25,13 @@ public class PMWeatherAPI {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerPayloads);
 
-        // modEventBus.addListener(this::clientSetup);
-
         LOGGER.info("Initialized PMWAPI");
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        if (!ModList.get().isLoaded("pmweather")) {
-            throw new RuntimeException("ProtoManly's Weather not detected!");
-        }
+//        if (!ModList.get().isLoaded("pmweather")) {
+//            throw new RuntimeException("ProtoManly's Weather not detected!");
+//        }
     }
 
     private void registerPayloads(RegisterPayloadHandlersEvent event) {
