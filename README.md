@@ -14,8 +14,10 @@ Need help? Join the Discord server [here](https://discord.gg/B6YKNVB6pW)!
 
 * Nearby Storm Detection
 * Nearby Radar Detection
+* Custom Radar Modes
 * Radar Overlays
 * Storm Builder
+* Color Maps
 * Events
 
 > ⚠️ This API is currently experimental due to PMWeather still being in alpha. Bugs should be expected.
