@@ -4,8 +4,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.protomanly.pmweather.weather.Storm;
 import dev.protomanly.pmweather.weather.Vorticy;
-import dev.protomanly.pmweather.weather.WeatherHandlerServer;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.nullved.pmweatherapi.event.StormEvent;
 import net.nullved.pmweatherapi.event.VorticyEvent;

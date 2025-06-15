@@ -13,8 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import net.nullved.pmweatherapi.PMWeatherAPI;
 import net.nullved.pmweatherapi.radar.NearbyRadars;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class NearbyRadarsCommand {
@@ -41,7 +39,7 @@ public class NearbyRadarsCommand {
             radius = ctx.getArgument("radius", Integer.class);
         } catch (Exception e) {
             radius = 512;
-        };
+        }
 
         long startTimeMillis = System.currentTimeMillis();
         Set<BlockPos> blocks = NearbyRadars.get(plr.level()).radarsNearBlock(plr.blockPosition(), radius);
