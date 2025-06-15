@@ -27,7 +27,7 @@ public class ColorMaps {
         .build(Color.WHITE, 70.0F);
 
     /**
-     * A {@link ColorMap} equivalent to {@link ColorTables#getVelocity(float)} for values >= 0
+     * A {@link ColorMap} equivalent to {@link ColorTables#getVelocity(float)} for values &ge; 0
      * @since 0.14.15.6
      */
     public static final ColorMap POSITIVE_VELOCITY = ColorMap.Builder.of(new Color(0x969696))
@@ -41,7 +41,7 @@ public class ColorMaps {
         .build(new Color(6751746), 140);
 
     /**
-     * A {@link ColorMap} equivalent to {@link ColorTables#getVelocity(float)} for values <= 0
+     * A {@link ColorMap} equivalent to {@link ColorTables#getVelocity(float)} for values &le; 0
      * @since 0.14.15.6
      */
     public static final ColorMap NEGATIVE_VELOCITY = ColorMap.Builder.of(new Color(0x969696))
