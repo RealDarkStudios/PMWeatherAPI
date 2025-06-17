@@ -125,13 +125,13 @@ public class RadarRendererMixin {
 
                 // PMWeatherAPI: Change ids to be integers instead of strings (also removes the String.format nightmare that was causing lag)
                 int id = ((short) x + resolution) << 8 | ((short) z + resolution);
-                String stringID = String.valueOf(id);
+                long longID = (long)(x + resolution + 1) + (long)(z + resolution + 1) * ((long)resolution * 2L + 1L);;
 
-                float dbz = radarBlockEntity.reflectivityMap.getOrDefault(stringID, 0.0F);
-                float temp = radarBlockEntity.temperatureMap.getOrDefault(stringID, 15.0F);
-                float vel = radarBlockEntity.velocityMap.getOrDefault(stringID, 0.0F);
+                float dbz = radarBlockEntity.reflectivityMap.getOrDefault(longID, 0.0F);
+                float temp = radarBlockEntity.temperatureMap.getOrDefault(longID, 15.0F);
+                float vel = radarBlockEntity.velocityMap.getOrDefault(longID, 0.0F);
                 Color color = PMWClientStorages.RADAR_MODE_COLORS.computeIfAbsent(radarMode, rm -> new HashMap<>()).getOrDefault(id, new Color(1.0F, 0, 1.0F));
-                Color dbg = radarBlockEntity.debugMap.getOrDefault(stringID, new Color(0, 0, 0));
+                Color dbg = radarBlockEntity.debugMap.getOrDefault(longID, new Color(0, 0, 0));
 
                 Vector3f pixelPos = (new Vector3f((float)x, 0.0F, (float)z)).mul(1.0F / (float)resolution).mul(sizeRenderDiameter / 2.0F);
                 Vec3 worldPos = (new Vec3(x, 0.0F, z)).multiply(1.0F / (float)resolution, 0.0F, (1.0F / (float)resolution)).multiply(simSize, 0.0F, simSize).add(pos.getCenter());
@@ -323,9 +323,9 @@ public class RadarRendererMixin {
                         temp = ThermodynamicEngine.samplePoint(GameBusClientEvents.weatherHandler, worldPos, blockEntity.getLevel(), radarBlockEntity, 0).temperature();
                     }
 
-                    radarBlockEntity.reflectivityMap.put(stringID, dbz);
-                    radarBlockEntity.temperatureMap.put(stringID, temp);
-                    radarBlockEntity.velocityMap.put(stringID, vel);
+                    radarBlockEntity.reflectivityMap.put(longID, dbz);
+                    radarBlockEntity.temperatureMap.put(longID, temp);
+                    radarBlockEntity.velocityMap.put(longID, vel);
 
                     // PMWeatherAPI: Support custom radar modes
                     PixelRenderData pixelRenderData = new PixelRenderData(canRender, dbz * 60.0F, vel, temp, x, z, resolution, renderData);
@@ -404,7 +404,7 @@ public class RadarRendererMixin {
                         }
                     }
 
-                    radarBlockEntity.debugMap.put(stringID, dbg);
+                    radarBlockEntity.debugMap.put(longID, dbg);
                 }
                 if (ClientConfig.radarDebugging) {
                     color = dbg;

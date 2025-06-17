@@ -38,7 +38,7 @@ side = "BOTH"
 [[dependencies."${mod_id}"]]
 modId = "pmweather"
 type = "required"
-versionRange = "[0.14.15-${minecraft_version}-alpha]"
+versionRange = "[${pmweather_version}-${minecraft_version}-alpha]"
 ordering = "BEFORE"
 side = "BOTH"
 
