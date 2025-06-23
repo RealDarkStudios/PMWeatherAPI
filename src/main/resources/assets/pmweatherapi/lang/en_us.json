@@ -1,6 +1,10 @@
 {
   "pmweatherapi.configuration.disable_custom_radar_mode_rendering": "Disable Custom Radar Mode Rendering",
   "pmweatherapi.configuration.disable_custom_radar_mode_rendering.tooltip": "Disables all custom radar modes from rendering. Falls back to PMWeather for Reflectivity and Velocity. Any custom radar modes will not appear, but still be cycled through",
+  "pmweatherapi.configuration.show_radar_mode_id": "Show Radar Mode ID",
+  "pmweatherapi.configuration.show_radar_mode_id.tooltip": "Enables an overlay to show the current radar mode's ID",
+  "pmweatherapi.configuration.radar_mode_id_side": "Radar Mode ID Side",
+  "pmweatherapi.configuration.radar_mode_id_side.tooltip": "Determines the side to render the Radar Mode ID Overlay. Does nothing if Show Radar Mode ID is off",
 
   "commands.pmweatherapi.non_player": "You must be a player to execute this command!"
 }

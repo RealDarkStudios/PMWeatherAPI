@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.nullved.pmweatherapi.PMWeatherAPI;
 import net.nullved.pmweatherapi.radar.NearbyRadars;
+import net.nullved.pmweatherapi.util.PMWUtils;
 
 import java.util.Set;
 
@@ -48,6 +49,10 @@ public class NearbyRadarsCommand {
         StringBuilder sb = new StringBuilder("Found ").append(blocks.size()).append(" radars in ").append(elapsedTime / 1000.0F).append("s");
         for (BlockPos blockPos : blocks) {
             sb.append("\nPos: ").append(blockPos.toShortString());
+        }
+
+        if (PMWUtils.isRadarAdjacent(plr.level(), plr.blockPosition())) {
+            sb.append("\nYou are next to a radar!");
         }
 
         plr.sendSystemMessage(Component.literal(sb.toString()).withColor(ChatFormatting.GOLD.getColor()));

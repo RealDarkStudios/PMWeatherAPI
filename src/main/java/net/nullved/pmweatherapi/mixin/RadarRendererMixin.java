@@ -117,7 +117,7 @@ public class RadarRendererMixin {
         float size = sizeRenderDiameter / (float)resolution;
 
         RenderData renderData = new RenderData(blockEntity, partialTicks, poseStack, multiBufferSource, combinedLightIn, combinedOverlayIn);
-        RadarMode radarMode = RadarMode.get(blockEntity.getBlockState().getValue(PMWExtras.RADAR_MODE).value());
+        RadarMode radarMode = blockEntity.getBlockState().getValue(PMWExtras.RADAR_MODE);
         if (!PMWClientStorages.RADAR_MODE_COLORS.containsKey(radarMode)) update = true;
 
         for(int x = -resolution; x <= resolution; ++x) {

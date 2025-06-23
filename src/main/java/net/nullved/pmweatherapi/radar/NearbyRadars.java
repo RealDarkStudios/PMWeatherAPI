@@ -74,7 +74,7 @@ public class NearbyRadars {
         Set<BlockPos> radarList = new HashSet<>();
 
         for (BlockPos radar: storage.getAllRadars()) {
-            if (radar.distToCenterSqr(pos.getX(), pos.getY(), pos.getZ()) <= radius * radius)  radarList.add(radar);
+            if (radar.distToCenterSqr(pos.getX(), pos.getY(), pos.getZ()) <= radius * radius) radarList.add(radar);
         }
 
         radarList.remove(pos);
@@ -93,7 +93,7 @@ public class NearbyRadars {
         Set<BlockPos> radarList = new HashSet<>();
 
         for (BlockPos radar: storage.getAllRadars()) {
-            if (radar.distToCenterSqr(pos.getMiddleBlockX(), radar.getY(), pos.getMiddleBlockZ()) <= radius * radius)  radarList.add(radar);
+            if (radar.distToCenterSqr(pos.getMiddleBlockX(), radar.getY(), pos.getMiddleBlockZ()) <= radius * radius) radarList.add(radar);
         }
 
         return radarList;
@@ -110,7 +110,7 @@ public class NearbyRadars {
         Set<BlockPos> radarList = new HashSet<>();
 
         for (BlockPos radar: storage.getAllRadars()) {
-            if (radar.distToCenterSqr(player.getX(), player.getY(), player.getZ()) <= radius * radius)  radarList.add(radar);
+            if (radar.distToCenterSqr(player.getX(), player.getY(), player.getZ()) <= radius * radius) radarList.add(radar);
         }
 
         return radarList;

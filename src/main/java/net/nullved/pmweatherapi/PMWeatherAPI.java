@@ -1,12 +1,9 @@
 package net.nullved.pmweatherapi;
 
 import com.mojang.logging.LogUtils;
-import dev.protomanly.pmweather.compat.DistantHorizons;
-import dev.protomanly.pmweather.config.ClientConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -15,10 +12,11 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.nullved.pmweatherapi.client.render.IDOverlay;
 import net.nullved.pmweatherapi.client.render.RadarOverlays;
 import net.nullved.pmweatherapi.config.PMWClientConfig;
-import net.nullved.pmweatherapi.example.ExampleOverlay;
 import net.nullved.pmweatherapi.network.PMWNetworking;
+import net.nullved.pmweatherapi.radar.RadarMode;
 import org.slf4j.Logger;
 
 @Mod(PMWeatherAPI.MODID)
@@ -30,6 +28,7 @@ public class PMWeatherAPI {
         LOGGER.info("Initializing PMWAPI...");
 
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::registerPayloads);
 
         LOGGER.info("Initialized PMWAPI");
@@ -51,7 +50,8 @@ public class PMWeatherAPI {
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
-        RadarOverlays.registerOverlay(() -> ExampleOverlay.INSTANCE);
+        RadarOverlays.registerOverlay(() -> IDOverlay.INSTANCE);
+        //RadarOverlays.registerOverlay(() -> ExampleOverlay.INSTANCE);
     }
 
     public static ResourceLocation rl(String path) {

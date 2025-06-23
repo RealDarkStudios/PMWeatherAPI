@@ -12,6 +12,7 @@ import net.nullved.pmweatherapi.PMWeatherAPI;
 import net.nullved.pmweatherapi.client.render.IRadarOverlay;
 import net.nullved.pmweatherapi.client.render.RenderData;
 import net.nullved.pmweatherapi.radar.NearbyRadars;
+import net.nullved.pmweatherapi.radar.RadarMode;
 import net.nullved.pmweatherapi.storm.NearbyStorms;
 import org.joml.Vector3f;
 
@@ -24,15 +25,15 @@ public class ExampleOverlay implements IRadarOverlay {
     public static final ExampleOverlay INSTANCE = new ExampleOverlay();
 
     @Override
-    public void render(boolean canRender, RenderData renderData, BufferBuilder bufferBuilder) {
+    public void render(boolean canRender, RenderData renderData, BufferBuilder bufferBuilder, Object... args) {
         if (!canRender) return;
         BlockEntity blockEntity = renderData.blockEntity();
         BlockPos pos = blockEntity.getBlockPos();
-        RadarBlock.Mode mode = blockEntity.getBlockState().getValue(RadarBlock.RADAR_MODE);
-        if (mode == RadarBlock.Mode.REFLECTIVITY) {
+        RadarMode mode = getRadarMode(renderData);
+        if (mode == RadarMode.REFLECTIVITY) {
             NearbyRadars.client().forRadarNearBlock(pos, 2048,
                 p -> renderMarker(bufferBuilder, p.offset(-pos.getX(), -pos.getY(), -pos.getZ()).getCenter()));
-        } else if (mode == RadarBlock.Mode.VELOCITY) {
+        } else if (mode == RadarMode.VELOCITY) {
             NearbyStorms.client().forStormNearBlock(pos, 2048,
                 s -> renderMarker(bufferBuilder, s.position.add(-pos.getX(), -pos.getY(), -pos.getZ())));
         }

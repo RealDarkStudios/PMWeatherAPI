@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * A class representing a Radar Mode.
@@ -100,12 +99,12 @@ public class RadarMode implements StringRepresentable, Comparable<RadarMode> {
     }
 
     /**
-     * Returns a {@link Collection} of {@link RadarMode}s expressed as {@link StringValue}s
-     * @return All Radar Modes expressed as {@link StringValue}s.
+     * Returns a {@link Collection} of {@link RadarMode}s
+     * @return All Radar Modes
      * @since 0.14.15.6
      */
-    public static Collection<StringValue> values() {
-        return MODES.values().stream().map(RadarMode::stringValue).collect(Collectors.toSet());
+    public static Collection<RadarMode> values() {
+        return MODES.values();
     }
 
     /**
@@ -142,6 +141,14 @@ public class RadarMode implements StringRepresentable, Comparable<RadarMode> {
         RadarMode[] values = MODES.values().toArray(RadarMode[]::new);
         int idx = Arrays.binarySearch(values, this);
         return values[(idx + 1) % values.length];
+    }
+
+    /**
+     * Gets the {@link ResourceLocation} of the radar mode
+     * @return The {@link ResourceLocation} of this radar mode
+     */
+    public ResourceLocation getId() {
+        return id;
     }
 
     /**

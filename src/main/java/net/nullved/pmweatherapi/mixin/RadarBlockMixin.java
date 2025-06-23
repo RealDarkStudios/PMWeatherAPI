@@ -27,7 +27,7 @@ public class RadarBlockMixin {
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ldev/protomanly/pmweather/block/RadarBlock;registerDefaultState(Lnet/minecraft/world/level/block/state/BlockState;)V"))
     private void init(RadarBlock instance, BlockState state) {
-        instance.registerDefaultState(instance.defaultBlockState().setValue(PMWExtras.RADAR_MODE, RadarMode.REFLECTIVITY.stringValue()).setValue(RADAR_MODE, RadarBlock.Mode.REFLECTIVITY));
+        instance.registerDefaultState(instance.defaultBlockState().setValue(PMWExtras.RADAR_MODE, RadarMode.REFLECTIVITY).setValue(RADAR_MODE, RadarBlock.Mode.REFLECTIVITY));
     }
 
     @Inject(method = "createBlockStateDefinition", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/StateDefinition$Builder;add([Lnet/minecraft/world/level/block/state/properties/Property;)Lnet/minecraft/world/level/block/state/StateDefinition$Builder;"))
@@ -40,9 +40,9 @@ public class RadarBlockMixin {
         original.call(state, level, pos, player, hitResult);
 
         if (!level.isClientSide()) {
-            RadarMode currentMode = RadarMode.get(state.getValue(PMWExtras.RADAR_MODE).value());
+            RadarMode currentMode = state.getValue(PMWExtras.RADAR_MODE);
             RadarMode newMode = currentMode.cycle();
-            level.setBlockAndUpdate(pos, state.setValue(PMWExtras.RADAR_MODE, newMode.stringValue()));
+            level.setBlockAndUpdate(pos, state.setValue(PMWExtras.RADAR_MODE, newMode));
         }
 
         return InteractionResult.SUCCESS_NO_ITEM_USED;
