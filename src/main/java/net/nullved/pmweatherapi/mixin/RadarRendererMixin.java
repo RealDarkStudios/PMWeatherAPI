@@ -34,6 +34,7 @@ import net.nullved.pmweatherapi.client.data.PMWClientStorages;
 import net.nullved.pmweatherapi.client.render.PixelRenderData;
 import net.nullved.pmweatherapi.client.render.RadarOverlays;
 import net.nullved.pmweatherapi.client.render.RenderData;
+import net.nullved.pmweatherapi.config.PMWClientConfig;
 import net.nullved.pmweatherapi.data.PMWExtras;
 import net.nullved.pmweatherapi.radar.RadarMode;
 import org.joml.Matrix4fStack;
@@ -328,20 +329,23 @@ public class RadarRendererMixin {
                     radarBlockEntity.velocityMap.put(longID, vel);
 
                     // PMWeatherAPI: Support custom radar modes
-                    PixelRenderData pixelRenderData = new PixelRenderData(canRender, dbz * 60.0F, vel, temp, x, z, resolution, renderData);
-                    color = radarMode.getColorForPixel(pixelRenderData);
-                    PMWClientStorages.RADAR_MODE_COLORS.get(radarMode).put(id, color);
+                    if (!PMWClientConfig.disableCustomRadarModeRendering) {
+                        PixelRenderData pixelRenderData = new PixelRenderData(canRender, dbz * 60.0F, vel, temp, x, z, resolution, renderData);
+                        color = radarMode.getColorForPixel(pixelRenderData);
+                        PMWClientStorages.RADAR_MODE_COLORS.get(radarMode).put(id, color);
+                    }
                 }
 
                 float rdbz = dbz * 60.0F;
 
-//                Color color = ColorTables.getReflectivity(rdbz);
-//                RadarBlock.Mode mode = blockEntity.getBlockState().getValue(RadarBlock.RADAR_MODE);
-//                if (mode == dev.protomanly.pmweather.block.RadarBlock.Mode.VELOCITY) {
-//                    color = new Color(0, 0, 0);
-//                    vel /= 1.75F;
-//                    color = ColorTables.lerp(Mth.clamp(Math.max(rdbz, (Mth.abs(vel) - 18.0F) / 0.65F) / 12.0F, 0.0F, 1.0F), color, ColorTables.getVelocity(vel));
-//                }
+                if (PMWClientConfig.disableCustomRadarModeRendering) {
+                    color = ColorTables.getReflectivity(rdbz);
+                    if (radarMode == RadarMode.VELOCITY) {
+                        color = new Color(0, 0, 0);
+                        vel /= 1.75F;
+                        color = ColorTables.lerp(Mth.clamp(Math.max(rdbz, (Mth.abs(vel) - 18.0F) / 0.65F) / 12.0F, 0.0F, 1.0F), color, ColorTables.getVelocity(vel));
+                    }
+                }
 
                 if (ClientConfig.radarDebugging && update) {
                     if (clientRadarMode == ClientConfig.RadarMode.TEMPERATURE) {

@@ -1,6 +1,6 @@
 {
-  "itemGroup.pmweatherapi": "Example Mod Tab",
-  "block.pmweatherapi.example_block": "Example Block",
-  "item.pmweatherapi.example_item": "Example Item",
+  "pmweatherapi.configuration.disable_custom_radar_mode_rendering": "Disable Custom Radar Mode Rendering",
+  "pmweatherapi.configuration.disable_custom_radar_mode_rendering.tooltip": "Disables all custom radar modes from rendering. Falls back to PMWeather for Reflectivity and Velocity. Any custom radar modes will not appear, but still be cycled through",
+
   "commands.pmweatherapi.non_player": "You must be a player to execute this command!"
 }

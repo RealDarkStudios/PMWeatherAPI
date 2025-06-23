@@ -16,15 +16,28 @@ import java.util.*;
  */
 public class ColorMap {
     private final boolean overrideModeGreater;
-    private final List<LerpSegment> segments;
+    private final NavigableMap<Float, LerpSegment> segments;
     private final NavigableMap<Float, Color> overridePoints;
     private final Color base;
 
-    private ColorMap(Color base, boolean overrideModeGreater, List<LerpSegment> segments, NavigableMap<Float, Color> overridePoints) {
+    private final float min;
+    private final float max;
+    private Color[] lookup;
+    private float resolution;
+
+    private ColorMap(Color base, boolean overrideModeGreater, List<LerpSegment> segments, NavigableMap<Float, Color> overridePoints, float resolution) {
+        this.min = Math.round(segments.getFirst().start / resolution) * resolution;
+        this.max = Math.round(segments.getLast().end / resolution) * resolution;
+
         this.base = base;
         this.overrideModeGreater = overrideModeGreater;
-        this.segments = segments;
+        this.segments = new TreeMap<>();
+        for (LerpSegment seg : segments) {
+            this.segments.put(seg.start, seg);
+        }
         this.overridePoints = overridePoints;
+
+        recomputeLookups(resolution);
     }
 
     /**
@@ -33,7 +46,7 @@ public class ColorMap {
      * @since 0.14.15.6
      */
     public float minValue() {
-        return segments.getFirst().start;
+        return min;
     }
 
     /**
@@ -42,16 +55,52 @@ public class ColorMap {
      * @since 0.14.15.6
      */
     public float maxValue() {
-        return segments.getLast().end;
+        return max;
     }
 
     /**
-     * Gets the {@link Color} for the specific value
+     * Recomputes the lookup table with the given resolution.
+     * @param resolution The new resolution
+     * @since 0.14.16.1
+     */
+    public void recomputeLookups(float resolution) {
+        this.resolution = resolution;
+        int size = (int) (((max - min) / resolution) + 1);
+        this.lookup = new Color[size];
+
+        for (int i = 0; i < size; i++) {
+            float val = min + i * resolution;
+            lookup[i] = getAccurate(val);
+        }
+    }
+
+    /**
+     * Retrieves the color value using the closest value from the lookup table.
+     * If you need the accurate value, use {@link #getAccurate(float)} instead
+     * @param val The value to get a color for
+     * @return The approximate color for this value
+     * @since 0.14.16.1
+     * @see #getAccurate(float)
+     */
+    public Color get(float val) {
+        float newVal = Math.round(val / resolution) * resolution;
+        if (newVal <= min) return lookup[0];
+        if (newVal >= max) return lookup[lookup.length - 1];
+        int idx = (int) ((newVal - min) / resolution);
+        return lookup[idx];
+    }
+
+    /**
+     * Gets the {@link Color} for the specific value.
+     * <br>
+     * This method is <strong>SLOWER</strong> and oftentimes the same as {@link #get(float)}.
+     * Use that instead if you only need the approximate value
      * @param val The value to get the {@link Color} of
      * @return The {@link Color} for the given value
      * @since 0.14.15.6
+     * @see #get(float)
      */
-    public Color get(float val) {
+    public Color getAccurate(float val) {
         Color currentColor = base;
 
         Map.Entry<Float, Color> override = overridePoints.floorEntry(val);
@@ -59,9 +108,12 @@ public class ColorMap {
             currentColor = override.getValue();
         }
 
-        for (LerpSegment seg : segments) {
-            if (val >= seg.start && (overrideModeGreater ? val <= seg.end : val < seg.end)) {
+        Map.Entry<Float, LerpSegment> entry = segments.floorEntry(val);
+        if (entry != null) {
+            LerpSegment seg = entry.getValue();
+            if (overrideModeGreater ? val <= seg.end : val < seg.end) {
                 float delta = (val - seg.start) / (seg.end - seg.start);
+                delta = delta > 1 ? 1 : delta < 0 ? 0 : delta;
                 return lerp(delta, seg.from, seg.to);
             }
         }
@@ -78,7 +130,6 @@ public class ColorMap {
      * @since 0.14.15.6
      */
     public static Color lerp(float delta, Color c1, Color c2) {
-        delta = Math.max(0.0F, Math.min(1.0F, delta));
         float r = c1.getRed() + delta * (c2.getRed() - c1.getRed());
         float g = c1.getGreen() + delta * (c2.getGreen() - c1.getGreen());
         float b = c1.getBlue() + delta * (c2.getBlue() - c1.getBlue());
@@ -104,7 +155,7 @@ public class ColorMap {
         private final NavigableMap<Float, Color> overridePoints = new TreeMap<>();
         private final Color base;
         private boolean overrideModeGreater = false;
-        private float lastThreshold = Float.NEGATIVE_INFINITY;
+        private float lastThreshold = Float.NEGATIVE_INFINITY, resolution = 0.1F;
         private Color lastColor;
 
         private Builder(Color base) {
@@ -120,6 +171,18 @@ public class ColorMap {
          */
         public static Builder of(Color base) {
             return new Builder(base);
+        }
+
+        /**
+         * Sets the step size between each value in the lookup table.
+         * A value too small may be storing the same color multiple times!
+         * @param resolution The resolution of the lookup table. Default 0.1F
+         * @return This {@link Builder}
+         * @since 0.14.16.1
+         */
+        public Builder lookupResolution(float resolution) {
+            this.resolution = resolution;
+            return this;
         }
 
         /**
@@ -182,7 +245,7 @@ public class ColorMap {
             else overridePoints.put(finalThreshold, finalColor);
 
             segments.add(new LerpSegment(lastThreshold, lastColor, finalThreshold, finalColor));
-            return new ColorMap(base, overrideModeGreater, segments, overridePoints);
+            return new ColorMap(base, overrideModeGreater, segments, overridePoints, resolution);
         }
     }
 }
