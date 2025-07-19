@@ -18,6 +18,6 @@ public class PacketNBTFromClientMixin {
 
     @Inject(method = "handle", at = @At(value = "INVOKE", target = "Ldev/protomanly/pmweather/block/entity/RadarBlockEntity;playerRequestsSync(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/core/BlockPos;)V"))
     private void onHandle(Player player, CallbackInfo ci) {
-        PMWStorages.getRadar(player.level()).addRadar(NbtUtils.readBlockPos(this.compoundTag, "blockPos").get());
+        PMWStorages.radars().get(player.level().dimension()).add(NbtUtils.readBlockPos(this.compoundTag, "blockPos").get());
     }
 }

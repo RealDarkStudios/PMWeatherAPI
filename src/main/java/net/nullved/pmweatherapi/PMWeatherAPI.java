@@ -15,8 +15,10 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.nullved.pmweatherapi.client.render.IDOverlay;
 import net.nullved.pmweatherapi.client.render.RadarOverlays;
 import net.nullved.pmweatherapi.config.PMWClientConfig;
+import net.nullved.pmweatherapi.data.PMWStorages;
 import net.nullved.pmweatherapi.network.PMWNetworking;
-import net.nullved.pmweatherapi.radar.RadarMode;
+import net.nullved.pmweatherapi.radar.RadarServerStorage;
+import net.nullved.pmweatherapi.radar.RadarStorage;
 import org.slf4j.Logger;
 
 @Mod(PMWeatherAPI.MODID)
@@ -40,6 +42,8 @@ public class PMWeatherAPI {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
+        PMWStorages.registerStorage(RadarStorage.ID, RadarServerStorage::new);
+
 //        if (!ModList.get().isLoaded("pmweather")) {
 //            throw new RuntimeException("ProtoManly's Weather not detected!");
 //        }
@@ -51,7 +55,7 @@ public class PMWeatherAPI {
 
     private void clientSetup(FMLClientSetupEvent event) {
         RadarOverlays.registerOverlay(() -> IDOverlay.INSTANCE);
-        //RadarOverlays.registerOverlay(() -> ExampleOverlay.INSTANCE);
+//        RadarOverlays.registerOverlay(() -> ExampleOverlay.INSTANCE);
     }
 
     public static ResourceLocation rl(String path) {

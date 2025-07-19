@@ -17,18 +17,16 @@ public class BlockBehaviourMixin {
     @Inject(method = "onPlace", at = @At("HEAD"))
     private static void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston, CallbackInfo ci) {
         if (state.getBlock() instanceof RadarBlock) {
-            RadarServerStorage radarStorage = PMWStorages.getRadar(level);
-            radarStorage.addRadar(pos);
-            radarStorage.syncAdd(pos);
+            RadarServerStorage radarStorage = PMWStorages.radars().get(level.dimension());
+            radarStorage.addAndSync(pos);
         }
     }
 
     @Inject(method = "onRemove", at = @At("HEAD"))
     private static void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston, CallbackInfo ci) {
         if (state.getBlock() instanceof RadarBlock) {
-            RadarServerStorage radarStorage = PMWStorages.getRadar(level);
-            radarStorage.removeRadar(pos);
-            radarStorage.syncRemove(pos);
+            RadarServerStorage radarStorage = PMWStorages.radars().get(level.dimension());
+            radarStorage.removeAndSync(pos);
         }
     }
 }

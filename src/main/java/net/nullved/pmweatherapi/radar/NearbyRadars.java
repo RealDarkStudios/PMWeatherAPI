@@ -50,7 +50,7 @@ public class NearbyRadars {
      * @since 0.14.15.3
      */
     public static NearbyRadars get(ResourceKey<Level> dim) {
-        return DIMENSION_MAP.computeIfAbsent(dim, d -> new NearbyRadars(PMWStorages.getRadar(d)));
+        return DIMENSION_MAP.computeIfAbsent(dim, d -> new NearbyRadars(PMWStorages.radars().get(d)));
     }
 
     /**
@@ -73,8 +73,8 @@ public class NearbyRadars {
     public Set<BlockPos> radarsNearBlock(BlockPos pos, double radius) {
         Set<BlockPos> radarList = new HashSet<>();
 
-        for (BlockPos radar: storage.getAllRadars()) {
-            if (radar.distToCenterSqr(pos.getX(), pos.getY(), pos.getZ()) <= radius * radius) radarList.add(radar);
+        for (BlockPos radar: storage.getAll()) {
+            if (Math.abs(radar.distToCenterSqr(pos.getX(), pos.getY(), pos.getZ())) <= radius * radius) radarList.add(radar);
         }
 
         radarList.remove(pos);
@@ -92,8 +92,8 @@ public class NearbyRadars {
     public Set<BlockPos> radarsNearChunk(ChunkPos pos, double radius) {
         Set<BlockPos> radarList = new HashSet<>();
 
-        for (BlockPos radar: storage.getAllRadars()) {
-            if (radar.distToCenterSqr(pos.getMiddleBlockX(), radar.getY(), pos.getMiddleBlockZ()) <= radius * radius) radarList.add(radar);
+        for (BlockPos radar: storage.getAll()) {
+            if (Math.abs(radar.distToCenterSqr(pos.getMiddleBlockX(), radar.getY(), pos.getMiddleBlockZ())) <= radius * radius) radarList.add(radar);
         }
 
         return radarList;
@@ -109,8 +109,8 @@ public class NearbyRadars {
     public Set<BlockPos> radarsNearPlayer(Player player, double radius) {
         Set<BlockPos> radarList = new HashSet<>();
 
-        for (BlockPos radar: storage.getAllRadars()) {
-            if (radar.distToCenterSqr(player.getX(), player.getY(), player.getZ()) <= radius * radius) radarList.add(radar);
+        for (BlockPos radar: storage.getAll()) {
+            if (Math.abs(radar.distToCenterSqr(player.getX(), player.getY(), player.getZ())) <= radius * radius) radarList.add(radar);
         }
 
         return radarList;

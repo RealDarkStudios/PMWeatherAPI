@@ -13,9 +13,11 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.ChunkWatchEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.nullved.pmweatherapi.PMWeatherAPI;
-import net.nullved.pmweatherapi.command.NearbyRadarsCommand;
+import net.nullved.pmweatherapi.command.StoragesCommand;
 import net.nullved.pmweatherapi.data.PMWStorages;
 import net.nullved.pmweatherapi.radar.RadarServerStorage;
+import net.nullved.pmweatherapi.storage.IServerStorage;
+import net.nullved.pmweatherapi.storage.ISyncServerStorage;
 
 import java.util.*;
 
@@ -23,12 +25,26 @@ import java.util.*;
 public class PMWEvents {
     @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        PMWStorages.getRadar(event.getEntity().level()).syncAllToPlayer(event.getEntity());
+        ResourceKey<Level> dimension = event.getEntity().level().dimension();
+
+        PMWStorages.getAll().forEach(si -> {
+            IServerStorage storage = si.get(dimension);
+            if (storage != null) {
+                if (storage instanceof ISyncServerStorage isss) isss.syncAllToPlayer(event.getEntity());
+            }
+        });
+
+        PMWeatherAPI.LOGGER.info("Synced all sync-storages to joined player {}", event.getEntity().getDisplayName().getString());
     }
+//
+//    @SubscribeEvent
+//    public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+//        PMWStorages.getStoragesForDimension(event.getTo()).forEach(iss -> iss.syncAllToPlayer(event.getEntity()));
+//    }
 
     @SubscribeEvent
-    public static void onChunkLoadEvent(ChunkWatchEvent.Sent event) {
-        RadarServerStorage radarStorage = PMWStorages.getRadar(event.getLevel());
+    public static void onChunkSentEvent(ChunkWatchEvent.Sent event) {
+        RadarServerStorage radarStorage = PMWStorages.radars().getOrCreate(event.getLevel());
         if (radarStorage.shouldRecalculate(event.getChunk().getPos())) {
             List<BlockPos> radars = new ArrayList<>();
             LevelAccessor level = event.getLevel();
@@ -38,26 +54,22 @@ public class PMWEvents {
                 if (level.getBlockState(pos).getBlock() instanceof RadarBlock) radars.add(pos);
             }
 
-            radarStorage.addRadars(radars);
-            radarStorage.syncAdd(radars);
+            radarStorage.addAndSync(radars);
         }
     }
 
     @SubscribeEvent
     public static void onRegisterCommandsEvent(RegisterCommandsEvent event) {
         PMWeatherAPI.LOGGER.info("Registering PMWeatherAPI Commands");
-        NearbyRadarsCommand.register(event.getDispatcher());
+        StoragesCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent
     public static void onLevelLoadEvent(LevelEvent.Load event) {
         LevelAccessor level = event.getLevel();
         if (!level.isClientSide() && level instanceof ServerLevel slevel) {
-            ResourceKey<Level> dimension = slevel.dimension();
-            RadarServerStorage radars = new RadarServerStorage(slevel);
-            radars.read();
-            PMWStorages.RADARS.put(dimension, radars);
-            PMWeatherAPI.LOGGER.info("Loaded radars for dimension {}", slevel.dimension().location());
+            PMWStorages.generateForDimension(slevel);
+            PMWeatherAPI.LOGGER.info("Loaded storages for dimension {}", slevel.dimension().location());
         }
     }
 
@@ -65,7 +77,8 @@ public class PMWEvents {
     public static void onLevelUnloadEvent(LevelEvent.Unload event) {
         LevelAccessor level =  event.getLevel();
         if (!level.isClientSide() && level instanceof ServerLevel slevel) {
-            PMWStorages.RADARS.remove(slevel.dimension());
+            PMWStorages.removeForDimension(slevel.dimension());
+            PMWeatherAPI.LOGGER.info("Unloaded storages for dimension {}", slevel.dimension().location());
         }
     }
 }
