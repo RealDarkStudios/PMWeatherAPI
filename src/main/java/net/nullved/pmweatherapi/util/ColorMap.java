@@ -1,6 +1,9 @@
 package net.nullved.pmweatherapi.util;
 
 import dev.protomanly.pmweather.util.ColorTables;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.phys.Vec3;
 
 import java.awt.Color;
 import java.util.*;
@@ -20,14 +23,14 @@ public class ColorMap {
     private final NavigableMap<Float, Color> overridePoints;
     private final Color base;
 
-    private final float min;
-    private final float max;
+    private final float min, max, firstThreshold;
     private Color[] lookup;
     private float resolution;
 
     private ColorMap(Color base, boolean overrideModeGreater, List<LerpSegment> segments, NavigableMap<Float, Color> overridePoints, float resolution) {
         this.min = Math.round(segments.getFirst().start / resolution) * resolution;
         this.max = Math.round(segments.getLast().end / resolution) * resolution;
+        this.firstThreshold = segments.getFirst().end;
 
         this.base = base;
         this.overrideModeGreater = overrideModeGreater;
@@ -88,6 +91,20 @@ public class ColorMap {
         if (newVal >= max) return lookup[lookup.length - 1];
         int idx = (int) ((newVal - min) / resolution);
         return lookup[idx];
+    }
+
+    public Color getWithBiome(float val, Holder<Biome> biome, Vec3 worldPos) {
+        Color startColor = Color.BLACK;
+        String rn = biome.getRegisteredName().toLowerCase();
+        if (rn.contains("ocean") || rn.contains("river")) startColor = new Color(biome.value().getWaterColor());
+        else if (rn.contains("beach") || rn.contains("desert")) {
+            if (rn.contains("badlands")) startColor = new Color(214, 111, 42);
+            else startColor = new Color(biome.value().getGrassColor(worldPos.x, worldPos.z));
+        } else startColor = new Color(227, 198, 150);
+
+        if (val < firstThreshold) {
+            return lerp(Math.clamp(val / (firstThreshold - min), 0.0F, 1.0F), startColor, segments.firstEntry().getValue().to);
+        } else return get(val);
     }
 
     /**
@@ -174,6 +191,15 @@ public class ColorMap {
         }
 
         /**
+         * Creates a new {@link ColorMap.Builder} that has a default {@link Color#BLACK} base
+         * @return The created {@link ColorMap.Builder}
+         * @since 0.15.0.0
+         */
+        public static Builder biome() {
+            return new Builder(Color.BLACK);
+        }
+
+        /**
          * Sets the step size between each value in the lookup table.
          * A value too small may be storing the same color multiple times!
          * @param resolution The resolution of the lookup table. Default 0.1F
@@ -235,7 +261,7 @@ public class ColorMap {
          */
         public ColorMap build(Color finalColor, float finalThreshold) {
             if (!segments.isEmpty()) {
-                LerpSegment first = segments.get(0);
+                LerpSegment first = segments.getFirst();
                 if (first.start > 0.0F) {
                     segments.add(0, new LerpSegment(0.0F, base, first.start, first.from));
                 }

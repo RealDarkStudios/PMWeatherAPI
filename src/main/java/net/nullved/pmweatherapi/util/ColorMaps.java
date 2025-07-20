@@ -11,10 +11,10 @@ import java.awt.*;
  */
 public class ColorMaps {
     /**
-     * A {@link ColorMap} equivalent to {@link ColorTables#getReflectivity(float)}
+     * A {@link ColorMap} equivalent to {@link ColorTables#getReflectivity(float, Color)}
      * @since 0.14.15.6
      */
-    public static final ColorMap REFLECTIVITY = ColorMap.Builder.of(Color.BLACK)
+    public static final ColorMap REFLECTIVITY = ColorMap.Builder.biome()
         .addPoint(new Color(0x5C9DAE), 19.0F)
         .addPoint(new Color(0x0B6409), 27.0F)
         .addPoint(new Color(0xC5B300), 40.0F)
@@ -67,4 +67,20 @@ public class ColorMaps {
         .addPoint(new Color(246, 53, 53), 200.0F)
         .addPoint(new Color(240, 53, 246), 250.0F)
         .build(new Color(255, 255, 255), 300.0F);
+
+    /**
+     * A {@link ColorMap} equivalent to {@link ColorTables#getIR(float)}
+     * @since 0.15.0.0
+     */
+    public static final ColorMap IR = ColorMap.Builder.of(Color.BLACK)
+        .addPoint(Color.WHITE, 100.0F)
+        .addPoint(new Color(0, 16, 116), 120.0F)
+        .addPoint(new Color(105, 248, 251), 140.0F)
+        .addPoint(new Color(0, 253, 0), 150.0F)
+        .addPoint(new Color(253, 251, 71), 160.0F)
+        .addPoint(new Color(235, 55, 23), 180.0F)
+        .addPoint(new Color(110, 26, 10), 200.0F)
+        .addPoint(Color.BLACK, 220.0F)
+        .build(Color.WHITE, 260.0F);
+
 }
