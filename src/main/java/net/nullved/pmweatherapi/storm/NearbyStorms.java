@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.nullved.pmweatherapi.util.StormType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -150,6 +151,105 @@ public class NearbyStorms {
      */
     public void forStormNearPlayer(Player player, double radius, Consumer<Storm> consumer) {
         List<Storm> storms = stormsNearPlayer(player, radius);
+        for (Storm storm: storms) consumer.accept(storm);
+    }
+
+    /**
+     * Returns a {@link List} of {@link Storm}s that meet the {@link StormType} in a defined radius around the block
+     * @param block The {@link BlockPos} of the block at the center of the search area
+     * @param radius The radius of the search area
+     * @param type The {@link StormType} to match
+     * @return A {@link List} of {@link Storm}s
+     * @since 0.15.0.0
+     */
+    public List<Storm> stormsNearBlock(BlockPos block, double radius, StormType type) {
+        List<Storm> allStorms = handler.getStorms();
+        List<Storm> nearStorms = new ArrayList<>();
+
+        for (Storm storm: allStorms) {
+            Vec3 pos = storm.position;
+            if (pos.distanceTo(block.getCenter()) <= radius && type.matches(storm)) nearStorms.add(storm);
+        }
+
+        return nearStorms;
+    }
+
+    /**
+     * Returns a {@link List} of {@link Storm}s that meet the {@link StormType} in a defined radius around the center of the chunk
+     * @param chunk The {@link ChunkPos} of the chunk at the center of the search area.
+     * @param radius The radius of the search area
+     * @param type The {@link StormType} to match
+     * @return A {@link List} of {@link Storm}s
+     * @since 0.15.0.0
+     */
+    public List<Storm> stormsNearChunk(ChunkPos chunk, double radius, StormType type) {
+        List<Storm> allStorms = handler.getStorms();
+        List<Storm> nearStorms = new ArrayList<>();
+
+        for (Storm storm: allStorms) {
+            Vec3 pos = storm.position;
+            if (pos.distanceTo(chunk.getWorldPosition().getCenter()) <= radius && type.matches(storm)) nearStorms.add(storm);
+        }
+
+        return nearStorms;
+    }
+
+    /**
+     * Returns a {@link List} of {@link Storm}s that meet the {@link StormType} in a defined radius around the given {@link Player}
+     * @param player The {@link Player} to search around
+     * @param radius The radius of the search area
+     * @param type The {@link StormType} to match
+     * @return A {@link List} of {@link Storm}s
+     * @since 0.15.0.0
+     */
+    public List<Storm> stormsNearPlayer(Player player, double radius, StormType type) {
+        List<Storm> allStorms = handler.getStorms();
+        List<Storm> nearStorms = new ArrayList<>();
+
+        for (Storm storm: allStorms) {
+            Vec3 pos = storm.position;
+            if (pos.distanceTo(player.position()) <= radius && type.matches(storm)) nearStorms.add(storm);
+        }
+
+        return nearStorms;
+    }
+
+    /**
+     * Executes the given {@link Consumer} for each {@link Storm} that meets the {@link StormType} in a defined radius around the block
+     * @param block The {@link BlockPos} of the block at the center of the search area
+     * @param radius The radius of the search area
+     * @param type The {@link StormType} to match
+     * @param consumer The {@link Consumer} to execute for each {@link Storm}
+     * @since 0.15.0.0
+     */
+    public void forStormNearBlock(BlockPos block, double radius, StormType type, Consumer<Storm> consumer) {
+        List<Storm> storms = stormsNearBlock(block, radius, type);
+        for (Storm storm: storms) consumer.accept(storm);
+    }
+
+    /**
+     * Executes the given {@link Consumer} for each {@link Storm} that meets the {@link StormType} in a defined radius around the center of the chunk
+     * @param chunk The {@link ChunkPos} of the chunk at the center of the search area.
+     * @param radius The radius of the search area
+     * @param type The {@link StormType} to match
+     * @param consumer The {@link Consumer} to execute for each {@link Storm}
+     * @since 0.15.0.0
+     */
+    public void forStormNearChunk(ChunkPos chunk, double radius, StormType type, Consumer<Storm> consumer) {
+        List<Storm> storms = stormsNearChunk(chunk, radius, type);
+        for (Storm storm: storms) consumer.accept(storm);
+    }
+
+    /**
+     * Executes the given {@link Consumer} for each {@link Storm} that meets the {@link StormType} in a defined radius around the given {@link Player}
+     * @param player The {@link Player} to search around
+     * @param radius The radius of the search area
+     * @param type The {@link StormType} to match
+     * @param consumer The {@link Consumer} to execute for each {@link Storm}
+     * @since 0.15.0.0
+     */
+    public void forStormNearPlayer(Player player, double radius, StormType type, Consumer<Storm> consumer) {
+        List<Storm> storms = stormsNearPlayer(player, radius, type);
         for (Storm storm: storms) consumer.accept(storm);
     }
 }

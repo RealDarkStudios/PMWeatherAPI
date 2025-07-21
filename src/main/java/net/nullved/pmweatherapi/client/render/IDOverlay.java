@@ -32,9 +32,10 @@ public class IDOverlay implements IRadarOverlay {
         PoseStack poseStack = renderData.poseStack();
         PMWClientConfig.RadarModeIDSide side = PMWClientConfig.radarModeIDSide;
 
-        poseStack.pushPose();
+        float scale = renderData.sizeRenderDiameter() / 3.0F;
 
-        poseStack.translate(side.x, 1.055f, side.z);
+        poseStack.pushPose();
+        poseStack.translate((side.x * scale) - 0.5F * (scale - 1), 1.055f, (side.z * scale) - 0.5F * (scale - 1));
         poseStack.mulPose(Axis.YN.rotationDegrees(side.rotation));
         poseStack.scale(0.01f, 0.01f, 0.01f);
 
