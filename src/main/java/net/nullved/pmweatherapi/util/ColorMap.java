@@ -93,8 +93,16 @@ public class ColorMap {
         return lookup[idx];
     }
 
+    /**
+     * Retrieves the color value using a color derived from the biome
+     * @param val The value to get a color for
+     * @param biome The biome to derive the starting color from
+     * @param worldPos The world position (for grass color checks)
+     * @return The approximate color for this value
+     * @since 0.15.0.0
+     */
     public Color getWithBiome(float val, Holder<Biome> biome, Vec3 worldPos) {
-        Color startColor = Color.BLACK;
+        Color startColor;
         String rn = biome.getRegisteredName().toLowerCase();
         if (rn.contains("ocean") || rn.contains("river")) startColor = new Color(biome.value().getWaterColor());
         else if (rn.contains("beach") || rn.contains("desert")) {
@@ -191,7 +199,8 @@ public class ColorMap {
         }
 
         /**
-         * Creates a new {@link ColorMap.Builder} that has a default {@link Color#BLACK} base
+         * Creates a new {@link ColorMap.Builder} that has a default {@link Color#BLACK} base.
+         * This method has no effect unless you use {@link ColorMap#getWithBiome(float, Holder, Vec3)}
          * @return The created {@link ColorMap.Builder}
          * @since 0.15.0.0
          */
