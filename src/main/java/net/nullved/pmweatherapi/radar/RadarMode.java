@@ -1,9 +1,13 @@
 package net.nullved.pmweatherapi.radar;
 
 import dev.protomanly.pmweather.PMWeather;
+import dev.protomanly.pmweather.block.entity.RadarBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.biome.Biome;
 import net.nullved.pmweatherapi.client.render.PixelRenderData;
 import net.nullved.pmweatherapi.client.render.RadarOverlays;
 import net.nullved.pmweatherapi.data.PMWExtras;
@@ -53,7 +57,11 @@ public class RadarMode implements StringRepresentable, Comparable<RadarMode> {
      * A Radar Mode that is a copy of PMWeather's Reflectivity
      * @since 0.14.15.6
      */
-    public static final RadarMode REFLECTIVITY  = create(PMWeather.getPath("reflectivity"), prd -> ColorMaps.REFLECTIVITY.get(prd.rdbz()));
+    public static final RadarMode REFLECTIVITY  = create(PMWeather.getPath("reflectivity"), prd -> {
+        Holder<Biome> biome = ((RadarBlockEntity) prd.renderData().blockEntity()).getNearestBiome(new BlockPos((int) prd.worldPos().x, (int) prd.worldPos().y, (int) prd.worldPos().z));
+        if (biome != null) return ColorMaps.REFLECTIVITY.getWithBiome(prd.rdbz(), biome, prd.worldPos());
+        else return ColorMaps.REFLECTIVITY.get(prd.rdbz());
+    });
 
     /**
      * A Radar Mode that is a copy of PMWeather's Velocity
@@ -63,6 +71,25 @@ public class RadarMode implements StringRepresentable, Comparable<RadarMode> {
         Color velCol = prd.velocity() >= 0.0F ? ColorMaps.POSITIVE_VELOCITY.get(prd.velocity() / 1.75F) : ColorMaps.NEGATIVE_VELOCITY.get(-prd.velocity() / 1.75F);
 
         return ColorMap.lerp(Mth.clamp(Math.max(prd.rdbz(), (Mth.abs(prd.velocity() / 1.75F) - 18.0F) / 0.65F) / 12.0F, 0.0F, 1.0F), Color.BLACK, velCol);
+    });
+
+    /**
+     * A Radar Mode that is a copy of PMWeather's IR
+     * @since 0.15.0.0
+     */
+    public static final RadarMode IR = create(PMWeather.getPath("ir"), prd -> {
+        float rdbz = prd.rdbz();
+        float ir = rdbz * 10.0F;
+
+        if (rdbz > 10.0F) {
+            ir = 100.0F + (rdbz - 10.0F) * 2.5F;
+        }
+
+        if (rdbz > 50.0F) {
+            ir += (rdbz - 50.0F) * 5.0F;
+        }
+
+        return ColorMaps.IR.get(ir);
     });
 
     private final ResourceLocation id;

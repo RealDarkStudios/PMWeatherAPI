@@ -41,9 +41,9 @@ public class PMWClientConfig {
         NORTH(0, -1, -1),
         EAST(90, 2, -1),
         SOUTH(180, 2, 2),
-        WEST(-90, -1, 2),;
+        WEST(-90, -1, 2);
 
-        public int rotation, x, z;
+        public final int rotation, x, z;
 
         RadarModeIDSide(int rotation, int x, int z) {
             this.rotation = rotation;
