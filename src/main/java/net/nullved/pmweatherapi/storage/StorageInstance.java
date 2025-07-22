@@ -76,10 +76,13 @@ public class StorageInstance<S extends IServerStorage> {
     }
 
     public void load(ServerLevel level) {
-        map.put(level.dimension(), creator.apply(level));
+        S storage = creator.apply(level);
+        storage.read();
+        map.put(level.dimension(), storage);
     }
 
     public void remove(ResourceKey<Level> dimension) {
+        S storage = map.get(dimension);
         map.remove(dimension);
     }
 }

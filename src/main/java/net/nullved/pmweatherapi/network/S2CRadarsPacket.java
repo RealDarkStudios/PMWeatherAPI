@@ -11,7 +11,7 @@ import net.nullved.pmweatherapi.client.radar.RadarClientStorage;
 
 /**
  * The packet that syncs radars from the server to the client, using the Storages system
- * @since 0.14.16.3
+ * @since 0.15.1.1
  */
 public class S2CRadarsPacket extends S2CStoragePacket<RadarClientStorage> {
     public static final CustomPacketPayload.Type<S2CRadarsPacket> TYPE = new Type<>(PMWeatherAPI.rl("s2c_radars"));
@@ -20,7 +20,7 @@ public class S2CRadarsPacket extends S2CStoragePacket<RadarClientStorage> {
     /**
      * Creates a new {@link S2CRadarsPacket}
      * @param tag The {@link CompoundTag} to send with the packet
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     public S2CRadarsPacket(CompoundTag tag) {
         super(tag);
@@ -29,7 +29,7 @@ public class S2CRadarsPacket extends S2CStoragePacket<RadarClientStorage> {
     /**
      * Gets the {@link RadarClientStorage} that is receiving data
      * @return The {@link RadarClientStorage}
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     @Override
     public RadarClientStorage getStorage() {

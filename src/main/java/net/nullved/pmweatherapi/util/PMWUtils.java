@@ -12,6 +12,12 @@ import java.util.Set;
 import java.util.function.Function;
 
 public class PMWUtils {
+    /**
+     * Checks if two {@link BlockPos} are corner-adjacent
+     * @param a A {@link BlockPos}
+     * @param b Another {@link BlockPos}
+     * @return {@code true} if they are corner-adjacent
+     */
     public static boolean isCornerAdjacent(BlockPos a, BlockPos b) {
         int dx = Math.abs(a.getX() - b.getX());
         int dy = Math.abs(a.getY() - b.getY());
@@ -20,6 +26,12 @@ public class PMWUtils {
         return (dx <= 1 && dy <= 1 && dz <= 1) && (dx + dy + dz > 0);
     }
 
+    /**
+     * Performs a {@link Function} for each {@link BlockPos} around a {@link BlockPos}
+     * @param pos The base {@link BlockPos}
+     * @param test The test
+     * @return A {@link Set} of {@link BlockPos} that passed the test
+     */
     public static Set<BlockPos> testAround(BlockPos pos, Function<BlockPos, Boolean> test) {
         HashSet<BlockPos> set = new HashSet<>();
 
@@ -35,6 +47,12 @@ public class PMWUtils {
         return set;
     }
 
+    /**
+     * Gets all {@link BlockPos} in a {@link IStorage} that are corner-adjacent to the base {@link BlockPos}
+     * @param storage The {@link IStorage} to check in
+     * @param pos The base {@link BlockPos}
+     * @return A {@link Set} of {@link BlockPos} that are in the {@link IStorage} around the base {@link BlockPos}
+     */
     public static Set<BlockPos> storageCornerAdjacent(IStorage storage, BlockPos pos) {
         HashSet<BlockPos> set = new HashSet<>();
 
@@ -72,7 +90,7 @@ public class PMWUtils {
      * @param dim The dimension to search in
      * @param pos The {@link BlockPos} to look by
      * @return {@code true} if there is a radar adjacent to this block, {@code false} otherwise
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     public static boolean isRadarCornerAdjacent(ResourceKey<Level> dim, BlockPos pos) {
         Set<BlockPos> nearby = NearbyRadars.get(dim).radarsNearBlock(pos, 3);
@@ -90,7 +108,7 @@ public class PMWUtils {
      * @param level The {@link Level} to search in
      * @param pos The {@link BlockPos} to look by
      * @return {@code true} if there is a radar adjacent to this block, {@code false} otherwise
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     public static boolean isRadarCornerAdjacent(Level level, BlockPos pos) {
         return isRadarCornerAdjacent(level.dimension(), pos);

@@ -16,7 +16,7 @@ import net.nullved.pmweatherapi.storage.IStorage;
 /**
  * A base packet for the Storages system that syncs data from the Server -> Client (S2C)
  * @param <T> The {@link IClientStorage} that will be synced to
- * @since 0.14.16.3
+ * @since 0.15.1.1
  */
 public abstract class S2CStoragePacket<T extends IClientStorage> implements CustomPacketPayload {
     public CompoundTag tag;
@@ -24,7 +24,7 @@ public abstract class S2CStoragePacket<T extends IClientStorage> implements Cust
     /**
      * Gets the {@link IClientStorage} that will be synced to.
      * @return The storage to be synced.
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     public abstract T getStorage();
 
@@ -35,7 +35,7 @@ public abstract class S2CStoragePacket<T extends IClientStorage> implements Cust
     /**
      * Creates a new {@link S2CStoragePacket} from a {@link RegistryFriendlyByteBuf}
      * @param buf The {@link RegistryFriendlyByteBuf} to read a {@link CompoundTag} from
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     public S2CStoragePacket(RegistryFriendlyByteBuf buf) {
         this(buf.readNbt());
@@ -44,7 +44,7 @@ public abstract class S2CStoragePacket<T extends IClientStorage> implements Cust
     /**
      * Gets the {@link CompoundTag} send with the packet
      * @return The packet data
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     public CompoundTag tag() {
         return tag;
@@ -53,7 +53,7 @@ public abstract class S2CStoragePacket<T extends IClientStorage> implements Cust
     /**
      * Writes the data into the given {@link FriendlyByteBuf}
      * @param buf The {@link FriendlyByteBuf} to write into
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     public void write(FriendlyByteBuf buf) {
         buf.writeNbt(tag);
@@ -62,7 +62,7 @@ public abstract class S2CStoragePacket<T extends IClientStorage> implements Cust
     /**
      * Handles the packet on the <strong>CLIENT SIDE</strong>
      * @param player The player the packet was sent to
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     public void handle(Player player) {
         try {

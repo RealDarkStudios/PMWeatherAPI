@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * The interface defining the client-side implementation of a Storage such as {@link RadarClientStorage}
  * <br><br>
  * Every time the client changes dimension, a new {@link IClientStorage} is created for each storage.
- * @since 0.14.16.3
+ * @since 0.15.1.1
  */
 public interface IClientStorage extends IStorage {
     ClientLevel getLevel();
@@ -28,7 +28,7 @@ public interface IClientStorage extends IStorage {
 
     /**
      * Syncs data from a {@link S2CStoragePacket} with operation {@code add} into this storage's memory
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     default void syncAdd(CompoundTag tag) {
         if (tag.contains("list") && tag.getBoolean("list")) {
@@ -47,7 +47,7 @@ public interface IClientStorage extends IStorage {
 
     /**
      * Syncs data from a {@link S2CStoragePacket} with operation {@code remove} into this storage's memory
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     default void syncRemove(CompoundTag tag) {
         if (tag.contains("list") && tag.getBoolean("list")) {

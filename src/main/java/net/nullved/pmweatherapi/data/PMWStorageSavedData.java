@@ -9,7 +9,7 @@ import net.nullved.pmweatherapi.storage.IStorage;
 /**
  * A {@link SavedData} instance for {@link IStorage}s
  *
- * @since 0.14.16.3
+ * @since 0.15.1.1
  */
 public class PMWStorageSavedData extends SavedData {
     private final CompoundTag tag;
@@ -18,7 +18,7 @@ public class PMWStorageSavedData extends SavedData {
     /**
      * Gets the factory for loading the {@link SavedData}
      * @return A {@link SavedData.Factory} for {@link PMWStorageSavedData}
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     public static SavedData.Factory<PMWStorageSavedData> factory() {
         return new SavedData.Factory<>(PMWStorageSavedData::new, PMWStorageSavedData::load, null);
@@ -44,7 +44,7 @@ public class PMWStorageSavedData extends SavedData {
     /**
      * Sets the {@link IStorage} associated with this {@link Level} or dimension
      * @param storage The {@link IStorage}
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     public void setStorage(IStorage storage) {
         this.storage = storage;
@@ -53,7 +53,7 @@ public class PMWStorageSavedData extends SavedData {
     /**
      * Gets the {@link SavedData} from the {@link Level}
      * @return A data {@link CompoundTag}
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     public CompoundTag getTag() {
         return tag;

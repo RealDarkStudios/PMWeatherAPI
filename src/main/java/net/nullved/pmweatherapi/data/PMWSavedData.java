@@ -8,9 +8,9 @@ import net.nullved.pmweatherapi.radar.RadarStorage;
 /**
  * The {@link SavedData} for PMWeatherAPI
  * @since 0.14.15.3
- * @deprecated Since 0.14.16.3 | Using new Storages system
+ * @deprecated Since 0.15.1.1 | Using new Storages system
  */
-@Deprecated(since = "0.14.16.3", forRemoval = true)
+@Deprecated(since = "0.15.1.1", forRemoval = true)
 public class PMWSavedData extends SavedData {
     private CompoundTag tag;
     private RadarStorage radarStorage;

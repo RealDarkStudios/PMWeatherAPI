@@ -25,7 +25,7 @@ import java.util.Set;
  * For method definitions, see {@link PMWStorage}
  *
  * @see PMWStorage
- * @since 0.14.16.3
+ * @since 0.15.1.1
  */
 public interface IStorage {
     Level getLevel();

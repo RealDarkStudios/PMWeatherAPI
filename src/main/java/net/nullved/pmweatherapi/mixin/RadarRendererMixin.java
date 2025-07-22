@@ -433,7 +433,7 @@ public class RadarRendererMixin {
                 }
 
                 float rdbz = dbz * 60.0F;
-                Color startColor = radarBlockEntity.terrainMap.getOrDefault(id, Color.BLACK);
+                Color startColor = radarBlockEntity.terrainMap.getOrDefault(longID, Color.BLACK);
                 if (radarBlockEntity.init && update) {
                     Holder<Biome> biome = radarBlockEntity.getNearestBiome(new BlockPos((int) worldPos.x, (int) worldPos.y, (int) worldPos.z));
                     String rn = biome.getRegisteredName().toLowerCase();

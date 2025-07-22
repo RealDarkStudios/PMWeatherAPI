@@ -12,7 +12,7 @@ import net.nullved.pmweatherapi.storage.PMWStorage;
 /**
  * A {@link IStorage} implementation for {@link RadarBlock}s
  *
- * @since 0.14.16.3
+ * @since 0.15.1.1
  */
 public abstract class RadarStorage extends PMWStorage {
     public static final ResourceLocation ID = PMWeatherAPI.rl("radars");

@@ -15,7 +15,7 @@ import net.nullved.pmweatherapi.storage.ISyncServerStorage;
  * <br><br>
  * You should not create a {@link RadarServerStorage}, instead, use {@link PMWStorages#radars()}
  *
- * @since 0.14.16.3
+ * @since 0.15.1.1
  */
 public class RadarServerStorage extends RadarStorage implements ISyncServerStorage {
     private final ServerLevel level;
@@ -25,7 +25,7 @@ public class RadarServerStorage extends RadarStorage implements ISyncServerStora
      * <br>
      * Get a radar storage from {@link PMWStorages#radars()}
      * @param level The level to create this storage for
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     public RadarServerStorage(ServerLevel level) {
         super(level.dimension());

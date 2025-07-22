@@ -35,6 +35,9 @@ public class PMWStorages {
     }
 
     public static StorageInstance<?> get(ResourceLocation location) {
+        if (!STORAGE_INSTANCES.containsKey(location)) {
+            PMWeatherAPI.LOGGER.error("No storage instance found for location {}", location);
+        }
         return STORAGE_INSTANCES.get(location);
     }
 

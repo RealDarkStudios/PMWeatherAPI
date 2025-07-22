@@ -13,7 +13,7 @@ import net.nullved.pmweatherapi.radar.RadarStorage;
  * A {@link IClientStorage} implementation for {@link RadarBlock}s
  * <br><br>
  * You should not create a {@link RadarClientStorage}, instead, use {@link PMWClientStorages#getRadars()}
- * @since 0.14.16.3
+ * @since 0.15.1.1
  */
 public class RadarClientStorage extends RadarStorage implements IClientStorage {
     /**
@@ -21,7 +21,7 @@ public class RadarClientStorage extends RadarStorage implements IClientStorage {
      * <br>
      * Get a radar storage from {@link PMWClientStorages#getRadars()}
      * @param dimension The dimension to create this storage for
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     public RadarClientStorage(ResourceKey<Level> dimension) {
         super(dimension);
@@ -30,7 +30,7 @@ public class RadarClientStorage extends RadarStorage implements IClientStorage {
     /**
      * Gets the level associated with this {@link RadarClientStorage}
      * @return The {@link Minecraft} {@link ClientLevel}
-     * @since 0.14.16.3
+     * @since 0.15.1.1
      */
     @Override
     public ClientLevel getLevel() {
