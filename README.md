@@ -32,14 +32,26 @@ In your `build.gradle`, add the following:
 ```groovy
 repositories {
   maven {
+      name = "Modrinth"
+      url = "https://api.modrinth.com/maven"
+  }
+  maven {
     name = "DU Maven"
     url = "https://maven.digitalunderworlds.com/snapshots/"
   }
 }
 
 dependencies {
-  implementation "net.nullved:pmweatherapi:<version>"
+  implementation "maven.modrinth:protomanlys-weather:${pmweather_ver}-alpha"
+  implementation "net.nullved:pmweatherapi:${pmweatherapi_ver}"
 }
+```
+
+In your `gradle.properties`, add:
+
+```properties
+pmweather_ver=0.15.1
+pmweatherapi_ver=0.15.1.0
 ```
 
 For usage examples and more details, check out the [wiki](https://github.com/RealDarkStudios/PMWeatherAPI/wiki/).

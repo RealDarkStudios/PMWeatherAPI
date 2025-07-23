@@ -433,15 +433,16 @@ public class RadarRendererMixin {
                 }
 
                 float rdbz = dbz * 60.0F;
-                Color startColor = radarBlockEntity.terrainMap.getOrDefault(id, Color.BLACK);
+                Color startColor = radarBlockEntity.terrainMap.getOrDefault(longID, Color.BLACK);
                 if (radarBlockEntity.init && update) {
                     Holder<Biome> biome = radarBlockEntity.getNearestBiome(new BlockPos((int) worldPos.x, (int) worldPos.y, (int) worldPos.z));
                     String rn = biome.getRegisteredName().toLowerCase();
                     if (rn.contains("ocean") || rn.contains("river")) startColor = new Color(biome.value().getWaterColor());
-                    else if (rn.contains("beach") || rn.contains("desert")) {
-                        if (rn.contains("badlands")) startColor = new Color(214, 111, 42);
-                        else startColor = new Color(biome.value().getGrassColor(worldPos.x, worldPos.z));
-                    } else startColor = new Color(227, 198, 150);
+                    else if (rn.contains("beach") || rn.contains("desert")) startColor = new Color(227, 198, 150);
+                    else if (rn.contains("badlangs")) startColor = new Color(214, 111, 42);
+                    else startColor = new Color(biome.value().getGrassColor(worldPos.x, worldPos.z));
+
+                    radarBlockEntity.terrainMap.put(longID, startColor);
                 }
 
                 if (PMWClientConfig.disableCustomRadarModeRendering) {
