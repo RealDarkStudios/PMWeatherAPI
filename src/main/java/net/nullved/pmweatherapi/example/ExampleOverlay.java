@@ -41,7 +41,7 @@ public class ExampleOverlay implements IRadarOverlay {
 
     @Override
     public String getModID() {
-        return PMWeatherAPI.MODID + "_test";
+        return "example";
     }
 
     private static void renderMarker(BufferBuilder bufferBuilder, Vec3 relative) {
