@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import dev.protomanly.pmweather.PMWeather;
+import dev.protomanly.pmweather.block.RadarBlock;
 import dev.protomanly.pmweather.block.entity.RadarBlockEntity;
 import dev.protomanly.pmweather.config.ClientConfig;
 import dev.protomanly.pmweather.config.ServerConfig;
@@ -61,6 +62,7 @@ public class RadarRendererMixin {
     private void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLightIn, int combinedOverlayIn, Operation<Void> original) {
         if (!(blockEntity instanceof RadarBlockEntity radarBlockEntity)) return;
         if (Minecraft.getInstance().player.position().distanceTo(blockEntity.getBlockPos().getCenter()) > (double) 20.0F || RenderedRadars > 2) return;
+        if (!radarBlockEntity.getBlockState().getValue(RadarBlock.ON)) return;
 
         ++RenderedRadars;
         boolean canRender = true;
@@ -439,7 +441,7 @@ public class RadarRendererMixin {
                     String rn = biome.getRegisteredName().toLowerCase();
                     if (rn.contains("ocean") || rn.contains("river")) startColor = new Color(biome.value().getWaterColor());
                     else if (rn.contains("beach") || rn.contains("desert")) startColor = new Color(227, 198, 150);
-                    else if (rn.contains("badlangs")) startColor = new Color(214, 111, 42);
+                    else if (rn.contains("badlands")) startColor = new Color(214, 111, 42);
                     else startColor = new Color(biome.value().getGrassColor(worldPos.x, worldPos.z));
 
                     radarBlockEntity.terrainMap.put(longID, startColor);
