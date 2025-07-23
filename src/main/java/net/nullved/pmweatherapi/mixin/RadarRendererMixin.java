@@ -104,19 +104,26 @@ public class RadarRendererMixin {
         if (ServerConfig.requireWSR88D && update) {
             canRender = false;
             int searchrange = 64;
+            boolean shouldSearch = false;
             Level level = blockEntity.getLevel();
 
             // PMWeatherAPI: Minor optimization, Create Radar -> WSR-88D lookup to not do up to 64^3 level#getBlockState calls EVERY 3 SECONDS
             if (PMWExtras.RADAR_WSR_88D_LOOKUP.containsKey(pos)) {
                 BlockEntity wsr88D = level.getBlockEntity(PMWExtras.RADAR_WSR_88D_LOOKUP.get(pos));
-                if (wsr88D.getBlockState().getBlock() instanceof WSR88DCore wsr88DCore) {
+                if (wsr88D != null && wsr88D.getBlockState().getBlock() instanceof WSR88DCore wsr88DCore) {
                     if (wsr88DCore.isComplete(wsr88D.getBlockState())) {
                         canRender = true;
                     } else {
                         PMWExtras.RADAR_WSR_88D_LOOKUP.remove(pos);
+                        shouldSearch = true;
                     }
+                } else {
+                    PMWExtras.RADAR_WSR_88D_LOOKUP.remove(pos);
+                    shouldSearch = true;
                 }
-            } else {
+            } else shouldSearch = true;
+
+            if (shouldSearch) {
                 for (int x = -searchrange; x <= searchrange && !canRender; ++x) {
                     for (int y = -searchrange; y <= searchrange && !canRender; ++y) {
                         for (int z = -searchrange * 2; z <= searchrange * 2; ++z) {
