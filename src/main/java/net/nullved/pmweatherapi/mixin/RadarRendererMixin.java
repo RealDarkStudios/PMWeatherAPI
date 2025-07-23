@@ -139,7 +139,7 @@ public class RadarRendererMixin {
 
         RenderData renderData = new RenderData(blockEntity, sizeRenderDiameter, partialTicks, poseStack, multiBufferSource, combinedLightIn, combinedOverlayIn);
         RadarMode radarMode = blockEntity.getBlockState().getValue(PMWExtras.RADAR_MODE);
-        if (!PMWClientStorages.RADAR_MODE_COLORS.containsKey(radarMode)) update = true;
+        if (!PMWClientStorages.RADAR_MODE_COLORS.computeIfAbsent(radarBlockEntity.getBlockPos(), bp -> new HashMap<>()).containsKey(radarMode)) update = true;
 
         for(int x = -resolution; x <= resolution; ++x) {
             for(int z = -resolution; z <= resolution; ++z) {
@@ -152,7 +152,7 @@ public class RadarRendererMixin {
                 float dbz = radarBlockEntity.reflectivityMap.getOrDefault(longID, 0.0F);
                 float temp = radarBlockEntity.temperatureMap.getOrDefault(longID, 15.0F);
                 float vel = radarBlockEntity.velocityMap.getOrDefault(longID, 0.0F);
-                Color color = PMWClientStorages.RADAR_MODE_COLORS.computeIfAbsent(radarMode, rm -> new HashMap<>()).getOrDefault(id, new Color(1.0F, 0, 1.0F));
+                Color color = PMWClientStorages.RADAR_MODE_COLORS.computeIfAbsent(radarBlockEntity.getBlockPos(), bp -> new HashMap<>()).computeIfAbsent(radarMode, rm -> new HashMap<>()).getOrDefault(id, new Color(1.0F, 0, 1.0F));
                 Color dbg = radarBlockEntity.debugMap.getOrDefault(longID, new Color(0, 0, 0));
 
                 Vector3f pixelPos = (new Vector3f((float) x, 0.0F, (float) z)).mul(1.0F / (float) resolution).mul(sizeRenderDiameter / 2.0F);
@@ -430,7 +430,7 @@ public class RadarRendererMixin {
                     if (!PMWClientConfig.disableCustomRadarModeRendering) {
                         PixelRenderData pixelRenderData = new PixelRenderData(canRender, dbz * 60.0F, vel, temp, x, z, resolution, worldPos, renderData);
                         color = radarMode.getColorForPixel(pixelRenderData);
-                        PMWClientStorages.RADAR_MODE_COLORS.get(radarMode).put(id, color);
+                        PMWClientStorages.RADAR_MODE_COLORS.computeIfAbsent(radarBlockEntity.getBlockPos(), bp -> new HashMap<>()).get(radarMode).put(id, color);
                     }
                 }
 
