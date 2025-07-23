@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.nullved.pmweatherapi.data.PMWExtras;
@@ -24,13 +25,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(RadarBlock.class)
 public class RadarBlockMixin {
     @Shadow public static EnumProperty<RadarBlock.Mode> RADAR_MODE;
+    @Shadow public static BooleanProperty ON;
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ldev/protomanly/pmweather/block/RadarBlock;registerDefaultState(Lnet/minecraft/world/level/block/state/BlockState;)V"))
     private void init(RadarBlock instance, BlockState state) {
         instance.registerDefaultState(instance.defaultBlockState().setValue(PMWExtras.RADAR_MODE, RadarMode.REFLECTIVITY).setValue(RADAR_MODE, RadarBlock.Mode.REFLECTIVITY));
     }
 
-    @Inject(method = "createBlockStateDefinition", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/StateDefinition$Builder;add([Lnet/minecraft/world/level/block/state/properties/Property;)Lnet/minecraft/world/level/block/state/StateDefinition$Builder;"))
+    @Inject(method = "createBlockStateDefinition", at = @At(value = "TAIL"))
     private void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder, CallbackInfo ci) {
         builder.add(PMWExtras.RADAR_MODE);
     }
@@ -38,6 +40,11 @@ public class RadarBlockMixin {
     @WrapMethod(method = "useWithoutItem")
     private InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult, Operation<InteractionResult> original) {
         original.call(state, level, pos, player, hitResult);
+
+        if (player.isCrouching()) {
+            level.setBlockAndUpdate(pos, state.setValue(ON, !state.getValue(ON)));
+            return InteractionResult.SUCCESS_NO_ITEM_USED;
+        }
 
         if (!level.isClientSide()) {
             RadarMode currentMode = state.getValue(PMWExtras.RADAR_MODE);

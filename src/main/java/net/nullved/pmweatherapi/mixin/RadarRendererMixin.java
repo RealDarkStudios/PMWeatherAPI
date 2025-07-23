@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import dev.protomanly.pmweather.PMWeather;
+import dev.protomanly.pmweather.block.RadarBlock;
 import dev.protomanly.pmweather.block.entity.RadarBlockEntity;
 import dev.protomanly.pmweather.config.ClientConfig;
 import dev.protomanly.pmweather.config.ServerConfig;
@@ -61,6 +62,7 @@ public class RadarRendererMixin {
     private void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLightIn, int combinedOverlayIn, Operation<Void> original) {
         if (!(blockEntity instanceof RadarBlockEntity radarBlockEntity)) return;
         if (Minecraft.getInstance().player.position().distanceTo(blockEntity.getBlockPos().getCenter()) > (double) 20.0F || RenderedRadars > 2) return;
+        if (!radarBlockEntity.getBlockState().getValue(RadarBlock.ON)) return;
 
         ++RenderedRadars;
         boolean canRender = true;
@@ -102,19 +104,26 @@ public class RadarRendererMixin {
         if (ServerConfig.requireWSR88D && update) {
             canRender = false;
             int searchrange = 64;
+            boolean shouldSearch = false;
             Level level = blockEntity.getLevel();
 
             // PMWeatherAPI: Minor optimization, Create Radar -> WSR-88D lookup to not do up to 64^3 level#getBlockState calls EVERY 3 SECONDS
             if (PMWExtras.RADAR_WSR_88D_LOOKUP.containsKey(pos)) {
                 BlockEntity wsr88D = level.getBlockEntity(PMWExtras.RADAR_WSR_88D_LOOKUP.get(pos));
-                if (wsr88D.getBlockState().getBlock() instanceof WSR88DCore wsr88DCore) {
+                if (wsr88D != null && wsr88D.getBlockState().getBlock() instanceof WSR88DCore wsr88DCore) {
                     if (wsr88DCore.isComplete(wsr88D.getBlockState())) {
                         canRender = true;
                     } else {
                         PMWExtras.RADAR_WSR_88D_LOOKUP.remove(pos);
+                        shouldSearch = true;
                     }
+                } else {
+                    PMWExtras.RADAR_WSR_88D_LOOKUP.remove(pos);
+                    shouldSearch = true;
                 }
-            } else {
+            } else shouldSearch = true;
+
+            if (shouldSearch) {
                 for (int x = -searchrange; x <= searchrange && !canRender; ++x) {
                     for (int y = -searchrange; y <= searchrange && !canRender; ++y) {
                         for (int z = -searchrange * 2; z <= searchrange * 2; ++z) {
@@ -137,7 +146,7 @@ public class RadarRendererMixin {
 
         RenderData renderData = new RenderData(blockEntity, sizeRenderDiameter, partialTicks, poseStack, multiBufferSource, combinedLightIn, combinedOverlayIn);
         RadarMode radarMode = blockEntity.getBlockState().getValue(PMWExtras.RADAR_MODE);
-        if (!PMWClientStorages.RADAR_MODE_COLORS.containsKey(radarMode)) update = true;
+        if (!PMWClientStorages.RADAR_MODE_COLORS.computeIfAbsent(radarBlockEntity.getBlockPos(), bp -> new HashMap<>()).containsKey(radarMode)) update = true;
 
         for(int x = -resolution; x <= resolution; ++x) {
             for(int z = -resolution; z <= resolution; ++z) {
@@ -150,7 +159,7 @@ public class RadarRendererMixin {
                 float dbz = radarBlockEntity.reflectivityMap.getOrDefault(longID, 0.0F);
                 float temp = radarBlockEntity.temperatureMap.getOrDefault(longID, 15.0F);
                 float vel = radarBlockEntity.velocityMap.getOrDefault(longID, 0.0F);
-                Color color = PMWClientStorages.RADAR_MODE_COLORS.computeIfAbsent(radarMode, rm -> new HashMap<>()).getOrDefault(id, new Color(1.0F, 0, 1.0F));
+                Color color = PMWClientStorages.RADAR_MODE_COLORS.computeIfAbsent(radarBlockEntity.getBlockPos(), bp -> new HashMap<>()).computeIfAbsent(radarMode, rm -> new HashMap<>()).getOrDefault(id, new Color(1.0F, 0, 1.0F));
                 Color dbg = radarBlockEntity.debugMap.getOrDefault(longID, new Color(0, 0, 0));
 
                 Vector3f pixelPos = (new Vector3f((float) x, 0.0F, (float) z)).mul(1.0F / (float) resolution).mul(sizeRenderDiameter / 2.0F);
@@ -428,7 +437,7 @@ public class RadarRendererMixin {
                     if (!PMWClientConfig.disableCustomRadarModeRendering) {
                         PixelRenderData pixelRenderData = new PixelRenderData(canRender, dbz * 60.0F, vel, temp, x, z, resolution, worldPos, renderData);
                         color = radarMode.getColorForPixel(pixelRenderData);
-                        PMWClientStorages.RADAR_MODE_COLORS.get(radarMode).put(id, color);
+                        PMWClientStorages.RADAR_MODE_COLORS.computeIfAbsent(radarBlockEntity.getBlockPos(), bp -> new HashMap<>()).get(radarMode).put(id, color);
                     }
                 }
 
@@ -438,10 +447,11 @@ public class RadarRendererMixin {
                     Holder<Biome> biome = radarBlockEntity.getNearestBiome(new BlockPos((int) worldPos.x, (int) worldPos.y, (int) worldPos.z));
                     String rn = biome.getRegisteredName().toLowerCase();
                     if (rn.contains("ocean") || rn.contains("river")) startColor = new Color(biome.value().getWaterColor());
-                    else if (rn.contains("beach") || rn.contains("desert")) {
-                        if (rn.contains("badlands")) startColor = new Color(214, 111, 42);
-                        else startColor = new Color(biome.value().getGrassColor(worldPos.x, worldPos.z));
-                    } else startColor = new Color(227, 198, 150);
+                    else if (rn.contains("beach") || rn.contains("desert")) startColor = new Color(227, 198, 150);
+                    else if (rn.contains("badlands")) startColor = new Color(214, 111, 42);
+                    else startColor = new Color(biome.value().getGrassColor(worldPos.x, worldPos.z));
+
+                    radarBlockEntity.terrainMap.put(longID, startColor);
                 }
 
                 if (PMWClientConfig.disableCustomRadarModeRendering) {

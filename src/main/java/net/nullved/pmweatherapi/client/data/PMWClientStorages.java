@@ -1,6 +1,7 @@
 package net.nullved.pmweatherapi.client.data;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -22,7 +23,7 @@ public class PMWClientStorages {
      * A {@link Map} of {@link RadarMode}s to {@link Map}s of pixel ids and their {@link Color}
      * @since 0.14.15.6
      */
-    public static Map<RadarMode, Map<Integer, Color>> RADAR_MODE_COLORS = new HashMap<>();
+    public static Map<BlockPos, Map<RadarMode, Map<Integer, Color>>> RADAR_MODE_COLORS = new HashMap<>();
 
     private static Level lastLevel;
     private static RadarClientStorage radar;
