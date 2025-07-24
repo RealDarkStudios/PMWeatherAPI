@@ -33,7 +33,7 @@ public class S2CRadarsPacket extends S2CStoragePacket<RadarClientStorage> {
      */
     @Override
     public RadarClientStorage getStorage() {
-        return PMWClientStorages.getRadars();
+        return PMWClientStorages.radars().get();
     }
 
     @Override

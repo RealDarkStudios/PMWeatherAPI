@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.nullved.pmweatherapi.PMWeatherAPI;
 import net.nullved.pmweatherapi.radar.RadarServerStorage;
+import net.nullved.pmweatherapi.radar.RadarStorage;
 import net.nullved.pmweatherapi.storage.IServerStorage;
 import net.nullved.pmweatherapi.storage.StorageInstance;
 
@@ -20,8 +21,6 @@ import java.util.function.Function;
  * @since 0.14.15.3
  */
 public class PMWStorages {
-    public static final ResourceLocation RADARS = PMWeatherAPI.rl("radars");
-
     public static final Map<ResourceLocation, StorageInstance<?>> STORAGE_INSTANCES = new HashMap<>();
 
 
@@ -31,7 +30,7 @@ public class PMWStorages {
      * @since 0.14.15.3
      */
     public static StorageInstance<RadarServerStorage> radars() {
-        return (StorageInstance<RadarServerStorage>) get(RADARS);
+        return get(RadarStorage.ID, RadarServerStorage.class).orElseThrow();
     }
 
     public static StorageInstance<?> get(ResourceLocation location) {
@@ -53,6 +52,10 @@ public class PMWStorages {
         return STORAGE_INSTANCES.values();
     }
 
+    public static Collection<? extends IServerStorage> getForDimension(ResourceKey<Level> dimension) {
+        return getAll().stream().map(si -> si.get(dimension)).toList();
+    }
+
     public static void generateForDimension(ServerLevel dimension) {
         STORAGE_INSTANCES.forEach((rl, si) -> si.load(dimension));
     }
@@ -61,8 +64,8 @@ public class PMWStorages {
         STORAGE_INSTANCES.forEach((rl, si) -> si.remove(dimension));
     }
 
-    public static <S extends IServerStorage> void registerStorage(ResourceLocation id, Function<ServerLevel, S> creator) {
-        StorageInstance<S> instance = new StorageInstance<>(id, creator);
+    public static <S extends IServerStorage> void registerStorage(ResourceLocation id, Class<S> clazz, Function<ServerLevel, S> creator) {
+        StorageInstance<S> instance = new StorageInstance<>(id, clazz, creator);
         STORAGE_INSTANCES.put(id, instance);
     }
 }

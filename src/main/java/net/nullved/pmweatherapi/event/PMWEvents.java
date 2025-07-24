@@ -36,11 +36,13 @@ public class PMWEvents {
 
         PMWeatherAPI.LOGGER.info("Synced all sync-storages to joined player {}", event.getEntity().getDisplayName().getString());
     }
-//
-//    @SubscribeEvent
-//    public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-//        PMWStorages.getStoragesForDimension(event.getTo()).forEach(iss -> iss.syncAllToPlayer(event.getEntity()));
-//    }
+
+    @SubscribeEvent
+    public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        PMWStorages.getForDimension(event.getTo()).forEach(iss -> {
+            if (iss != null) iss.syncAllToPlayer(event.getEntity());
+        });
+    }
 
     @SubscribeEvent
     public static void onChunkSentEvent(ChunkWatchEvent.Sent event) {

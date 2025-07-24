@@ -11,11 +11,13 @@ import java.util.function.Function;
 
 public class StorageInstance<S extends IServerStorage> {
     private final ResourceLocation id;
-    private final HashMap<ResourceKey<Level>, S> map = new HashMap<>();
+    private final Class<S> clazz;
     private final Function<ServerLevel, S> creator;
+    private final HashMap<ResourceKey<Level>, S> map = new HashMap<>();
 
-    public StorageInstance(ResourceLocation id, Function<ServerLevel, S> creator) {
+    public StorageInstance(ResourceLocation id, Class<S> clazz, Function<ServerLevel, S> creator) {
         this.id = id;
+        this.clazz = clazz;
         this.creator = creator;
     }
 
@@ -51,25 +53,20 @@ public class StorageInstance<S extends IServerStorage> {
         return map.computeIfAbsent(level.dimension(), dim -> creator.apply(level));
     }
 
-    public <O extends IServerStorage> Optional<StorageInstance<O>> cast(Class<O> clazz) {
-        if (map.isEmpty()) return Optional.of(new StorageInstance<>(id(), sl ->  (O) creator.apply(sl)));
-
-        S val = map.values().stream().findFirst().orElseThrow();
-        if (clazz.isAssignableFrom(val.getClass())) {
-            // almost unevitable to
+    public <O extends IServerStorage> Optional<StorageInstance<O>> cast(Class<O> oclazz) {
+        if (oclazz.isAssignableFrom(clazz)) {
             @SuppressWarnings("unchecked")
-            StorageInstance<O> casted = new StorageInstance<>(id(), sl -> (O) creator.apply(sl));
+            StorageInstance<O> casted = new StorageInstance<>(id(), oclazz, sl -> (O) creator.apply(sl));
             HashMap<ResourceKey<Level>, O> backingMap = casted.getBackingMap();
 
             try {
-
                 for (Map.Entry<ResourceKey<Level>, S> entry : this.map.entrySet()) {
-                    backingMap.put(entry.getKey(), clazz.cast(entry.getValue()));
+                    backingMap.put(entry.getKey(), oclazz.cast(entry.getValue()));
                 }
 
                 return Optional.of(casted);
             } catch (ClassCastException e) {
-                PMWeatherAPI.LOGGER.error("Could not cast {} to {}", val.getClass().getSimpleName(), clazz.getSimpleName());
+                PMWeatherAPI.LOGGER.error("Could not cast {} to {}", clazz.getSimpleName(), oclazz.getSimpleName());
                 return Optional.empty();
             }
         } else return Optional.empty();

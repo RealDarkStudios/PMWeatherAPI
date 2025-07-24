@@ -40,7 +40,7 @@ public class NearbyRadars {
      */
     @OnlyIn(Dist.CLIENT)
     public static NearbyRadars client() {
-        return new NearbyRadars(PMWClientStorages.getRadars());
+        return new NearbyRadars(PMWClientStorages.radars().get());
     }
 
     /**
