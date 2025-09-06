@@ -568,17 +568,19 @@ public class RadarRendererMixin {
                     color = dbg;
                 }
 
-                r = (float)color.getRed() / 255.0F;
-                g = (float)color.getGreen() / 255.0F;
-                b = (float)color.getBlue() / 255.0F;
-                a = (float)color.getAlpha() / 255.0F * 0.75F + 0.25F;
+                if (!RadarMode.isBaseRenderingDisabled()) {
+                    r = (float) color.getRed() / 255.0F;
+                    g = (float) color.getGreen() / 255.0F;
+                    b = (float) color.getBlue() / 255.0F;
+                    a = (float) color.getAlpha() / 255.0F * 0.75F + 0.25F;
 
-                Vector3f topLeft = (new Vector3f(-1.0F, 0.0F, -1.0F)).mul(size / 4.0F).add(pixelPos);
-                Vector3f bottomLeft = (new Vector3f(-1.0F, 0.0F, 1.0F)).mul(size / 4.0F).add(pixelPos);
-                Vector3f bottomRight = (new Vector3f(1.0F, 0.0F, 1.0F)).mul(size / 4.0F).add(pixelPos);
-                Vector3f topRight = (new Vector3f(1.0F, 0.0F, -1.0F)).mul(size / 4.0F).add(pixelPos);
+                    Vector3f topLeft = (new Vector3f(-1.0F, 0.0F, -1.0F)).mul(size / 4.0F).add(pixelPos);
+                    Vector3f bottomLeft = (new Vector3f(-1.0F, 0.0F, 1.0F)).mul(size / 4.0F).add(pixelPos);
+                    Vector3f bottomRight = (new Vector3f(1.0F, 0.0F, 1.0F)).mul(size / 4.0F).add(pixelPos);
+                    Vector3f topRight = (new Vector3f(1.0F, 0.0F, -1.0F)).mul(size / 4.0F).add(pixelPos);
 
-                bufferBuilder.addVertex(topLeft).setColor(r, g, b, a).addVertex(bottomLeft).setColor(r, g, b, a).addVertex(bottomRight).setColor(r, g, b, a).addVertex(topRight).setColor(r, g, b, a);
+                    bufferBuilder.addVertex(topLeft).setColor(r, g, b, a).addVertex(bottomLeft).setColor(r, g, b, a).addVertex(bottomRight).setColor(r, g, b, a).addVertex(topRight).setColor(r, g, b, a);
+                }
             }
         }
 

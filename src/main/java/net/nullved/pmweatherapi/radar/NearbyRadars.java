@@ -10,6 +10,9 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.nullved.pmweatherapi.client.data.PMWClientStorages;
 import net.nullved.pmweatherapi.data.PMWStorages;
+import net.nullved.pmweatherapi.radar.storage.RadarStorage;
+import net.nullved.pmweatherapi.radar.storage.RadarStorageData;
+import net.nullved.pmweatherapi.storage.data.BlockPosData;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,8 +76,8 @@ public class NearbyRadars {
     public Set<BlockPos> radarsNearBlock(BlockPos pos, double radius) {
         Set<BlockPos> radarList = new HashSet<>();
 
-        for (BlockPos radar: storage.getAll()) {
-            if (Math.abs(radar.distToCenterSqr(pos.getX(), pos.getY(), pos.getZ())) <= radius * radius) radarList.add(radar);
+        for (RadarStorageData radar: storage.getAll()) {
+            if (Math.abs(radar.getPos().distToCenterSqr(pos.getX(), pos.getY(), pos.getZ())) <= radius * radius) radarList.add(radar.getPos());
         }
 
         radarList.remove(pos);
@@ -92,8 +95,8 @@ public class NearbyRadars {
     public Set<BlockPos> radarsNearChunk(ChunkPos pos, double radius) {
         Set<BlockPos> radarList = new HashSet<>();
 
-        for (BlockPos radar: storage.getAll()) {
-            if (Math.abs(radar.distToCenterSqr(pos.getMiddleBlockX(), radar.getY(), pos.getMiddleBlockZ())) <= radius * radius) radarList.add(radar);
+        for (RadarStorageData radar: storage.getAll()) {
+            if (Math.abs(radar.getPos().distToCenterSqr(pos.getMiddleBlockX(), radar.getPos().getY(), pos.getMiddleBlockZ())) <= radius * radius) radarList.add(radar.getPos());
         }
 
         return radarList;
@@ -109,8 +112,8 @@ public class NearbyRadars {
     public Set<BlockPos> radarsNearPlayer(Player player, double radius) {
         Set<BlockPos> radarList = new HashSet<>();
 
-        for (BlockPos radar: storage.getAll()) {
-            if (Math.abs(radar.distToCenterSqr(player.getX(), player.getY(), player.getZ())) <= radius * radius) radarList.add(radar);
+        for (RadarStorageData radar: storage.getAll()) {
+            if (Math.abs(radar.getPos().distToCenterSqr(player.getX(), player.getY(), player.getZ())) <= radius * radius) radarList.add(radar.getPos());
         }
 
         return radarList;

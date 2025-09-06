@@ -5,11 +5,32 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.nullved.pmweatherapi.PMWeatherAPI;
+import net.nullved.pmweatherapi.data.PMWStorages;
+import net.nullved.pmweatherapi.storage.data.IStorageData;
+import net.nullved.pmweatherapi.storage.data.StorageData;
 
 import java.util.*;
 import java.util.function.Function;
 
-public class StorageInstance<S extends IServerStorage> {
+/**
+ * A Storage Instance for a given {@link IServerStorage} type.
+ * <br><br>
+ * A Storage Instance holds all of the {@link IServerStorage} instances for each dimension.
+ * <br><br>
+ * To get the {@link IServerStorage} for a specific dimension, use {@link #get(ResourceKey)}.
+ * If you are unsure the {@link IServerStorage} exists and have a {@link ServerLevel}, use {@link #getOrCreate(ServerLevel)}.
+ * <br><br>
+ * To load a new dimension, pass the {@link ServerLevel} into {@link #load(ServerLevel)}.
+ * To remove a dimension, call {@link #remove(ResourceKey)}
+ * <br><br>
+ * You should not create {@link StorageInstance}s yourself.
+ * Instead, get them from {@link PMWStorages#get}
+ * 
+ * @param <D> The {@link IStorageData} of the {@link IServerStorage}
+ * @param <S> The {@link IServerStorage}
+ * @since 0.15.3.3
+ */
+public class StorageInstance<D extends IStorageData, S extends IServerStorage<D>> {
     private final ResourceLocation id;
     private final Class<S> clazz;
     private final Function<ServerLevel, S> creator;
@@ -50,13 +71,17 @@ public class StorageInstance<S extends IServerStorage> {
     }
 
     public S getOrCreate(ServerLevel level) {
-        return map.computeIfAbsent(level.dimension(), dim -> creator.apply(level));
+        return map.computeIfAbsent(level.dimension(), dim -> {
+            S storage = creator.apply(level);
+            storage.read();
+            return storage;
+        });
     }
 
-    public <O extends IServerStorage> Optional<StorageInstance<O>> cast(Class<O> oclazz) {
+    public <F extends IStorageData, O extends IServerStorage<F>> Optional<StorageInstance<F, O>> cast(Class<O> oclazz) {
         if (oclazz.isAssignableFrom(clazz)) {
             @SuppressWarnings("unchecked")
-            StorageInstance<O> casted = new StorageInstance<>(id(), oclazz, sl -> (O) creator.apply(sl));
+            StorageInstance<F, O> casted = new StorageInstance<>(id(), oclazz, sl -> (O) creator.apply(sl));
             HashMap<ResourceKey<Level>, O> backingMap = casted.getBackingMap();
 
             try {

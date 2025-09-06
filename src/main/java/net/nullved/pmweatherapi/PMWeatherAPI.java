@@ -13,15 +13,26 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.nullved.pmweatherapi.client.data.PMWClientStorages;
+import net.nullved.pmweatherapi.client.metar.MetarClientStorage;
 import net.nullved.pmweatherapi.client.radar.RadarClientStorage;
+import net.nullved.pmweatherapi.client.radar.WSRClientStorage;
 import net.nullved.pmweatherapi.client.render.IDOverlay;
 import net.nullved.pmweatherapi.client.render.RadarOverlays;
 import net.nullved.pmweatherapi.config.PMWClientConfig;
 import net.nullved.pmweatherapi.data.PMWStorages;
+import net.nullved.pmweatherapi.example.ExampleOverlay;
+import net.nullved.pmweatherapi.metar.MetarServerStorage;
+import net.nullved.pmweatherapi.metar.MetarStorage;
+import net.nullved.pmweatherapi.metar.MetarStorageData;
 import net.nullved.pmweatherapi.network.PMWNetworking;
-import net.nullved.pmweatherapi.radar.RadarServerStorage;
-import net.nullved.pmweatherapi.radar.RadarStorage;
+import net.nullved.pmweatherapi.radar.RadarMode;
+import net.nullved.pmweatherapi.radar.storage.*;
+import net.nullved.pmweatherapi.storage.data.BlockPosData;
+import net.nullved.pmweatherapi.storage.data.StorageDataManager;
+import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
+
+import java.awt.*;
 
 @Mod(PMWeatherAPI.MODID)
 public class PMWeatherAPI {
@@ -44,11 +55,14 @@ public class PMWeatherAPI {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        PMWStorages.registerStorage(RadarStorage.ID, RadarServerStorage.class, RadarServerStorage::new);
+        StorageDataManager.register(BlockPosData.ID, BlockPosData::deserializeFromNBT);
+        StorageDataManager.register(RadarStorageData.ID, RadarStorageData::deserializeFromNBT);
+        StorageDataManager.register(MetarStorageData.ID, MetarStorageData::deserializeFromNBT);
+        StorageDataManager.register(WSRStorageData.ID, WSRStorageData::deserializeFromNBT);
 
-//        if (!ModList.get().isLoaded("pmweather")) {
-//            throw new RuntimeException("ProtoManly's Weather not detected!");
-//        }
+        PMWStorages.registerStorage(RadarStorage.ID, RadarServerStorage.class, RadarServerStorage::new);
+        PMWStorages.registerStorage(MetarStorage.ID, MetarServerStorage.class, MetarServerStorage::new);
+        PMWStorages.registerStorage(WSRStorage.ID, WSRServerStorage.class, WSRServerStorage::new);
     }
 
     private void registerPayloads(RegisterPayloadHandlersEvent event) {
@@ -56,12 +70,15 @@ public class PMWeatherAPI {
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
+        //RadarMode.removeBaseRendering(true);
+
         PMWClientStorages.registerStorage(RadarStorage.ID, RadarClientStorage.class, RadarClientStorage::new);
+        PMWClientStorages.registerStorage(MetarStorage.ID, MetarClientStorage.class, MetarClientStorage::new);
+        PMWClientStorages.registerStorage(WSRStorage.ID, WSRClientStorage.class, WSRClientStorage::new);
 
         RadarOverlays.registerOverlay(() -> IDOverlay.INSTANCE);
-//        RadarOverlays.registerOverlay(() -> ExampleOverlay.INSTANCE);
+        //RadarOverlays.registerOverlay(() -> ExampleOverlay.INSTANCE);
     }
-
     public static ResourceLocation rl(String path) {
         return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }

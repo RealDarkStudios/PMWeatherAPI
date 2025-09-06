@@ -6,7 +6,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.nullved.pmweatherapi.client.data.IClientStorage;
-import net.nullved.pmweatherapi.radar.RadarStorage;
+import net.nullved.pmweatherapi.radar.storage.RadarStorage;
+import net.nullved.pmweatherapi.storage.data.IStorageData;
+import net.nullved.pmweatherapi.storage.data.StorageData;
 
 import java.util.Collection;
 import java.util.Set;
@@ -25,26 +27,28 @@ import java.util.Set;
  * For method definitions, see {@link PMWStorage}
  *
  * @see PMWStorage
- * @since 0.15.1.1
+ * @since 0.15.3.3
  */
-public interface IStorage {
+public interface IStorage<D extends IStorageData> {
     Level getLevel();
     ResourceLocation getId();
     int version();
 
     void clean();
 
-    Set<BlockPos> getAll();
-    Set<BlockPos> getAllWithinRange(BlockPos base, double radius);
-    Set<BlockPos> getInChunk(ChunkPos pos);
-    Set<BlockPos> getInAdjacentChunks(ChunkPos pos);
+    Set<D> getAll();
+    Set<D> getAllWithinRange(BlockPos base, double radius);
+    Set<D> getInChunk(ChunkPos pos);
+    Set<D> getInAdjacentChunks(ChunkPos pos);
 
     boolean shouldRecalculate(ChunkPos pos);
 
-    void add(BlockPos pos);
-    void add(Collection<BlockPos> pos);
+    void add(D data);
+    void add(Collection<D> datum);
+    void remove(D data);
+    void removeByData(Collection<D> datum);
     void remove(BlockPos pos);
-    void remove(Collection<BlockPos> pos);
+    void removeByPos(Collection<BlockPos> pos);
 
     CompoundTag save(CompoundTag tag);
     void read();

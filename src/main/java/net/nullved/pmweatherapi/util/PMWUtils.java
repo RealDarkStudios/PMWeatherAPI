@@ -6,6 +6,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.nullved.pmweatherapi.radar.NearbyRadars;
 import net.nullved.pmweatherapi.storage.IStorage;
+import net.nullved.pmweatherapi.storage.data.StorageData;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -52,12 +53,13 @@ public class PMWUtils {
      * @param storage The {@link IStorage} to check in
      * @param pos The base {@link BlockPos}
      * @return A {@link Set} of {@link BlockPos} that are in the {@link IStorage} around the base {@link BlockPos}
+     * @since 0.15.3.3
      */
-    public static Set<BlockPos> storageCornerAdjacent(IStorage storage, BlockPos pos) {
-        HashSet<BlockPos> set = new HashSet<>();
+    public static <D extends StorageData> Set<D> storageCornerAdjacent(IStorage<D> storage, BlockPos pos) {
+        HashSet<D> set = new HashSet<>();
 
-        for (BlockPos bp: storage.getInAdjacentChunks(new ChunkPos(pos))) {
-            if (isCornerAdjacent(bp, pos)) set.add(bp);
+        for (D data: storage.getInAdjacentChunks(new ChunkPos(pos))) {
+            if (isCornerAdjacent(data.getPos(), pos)) set.add(data);
         }
 
         return set;
@@ -90,7 +92,7 @@ public class PMWUtils {
      * @param dim The dimension to search in
      * @param pos The {@link BlockPos} to look by
      * @return {@code true} if there is a radar adjacent to this block, {@code false} otherwise
-     * @since 0.15.1.1
+     * @since 0.15.3.3
      */
     public static boolean isRadarCornerAdjacent(ResourceKey<Level> dim, BlockPos pos) {
         Set<BlockPos> nearby = NearbyRadars.get(dim).radarsNearBlock(pos, 3);
@@ -108,7 +110,7 @@ public class PMWUtils {
      * @param level The {@link Level} to search in
      * @param pos The {@link BlockPos} to look by
      * @return {@code true} if there is a radar adjacent to this block, {@code false} otherwise
-     * @since 0.15.1.1
+     * @since 0.15.3.3
      */
     public static boolean isRadarCornerAdjacent(Level level, BlockPos pos) {
         return isRadarCornerAdjacent(level.dimension(), pos);

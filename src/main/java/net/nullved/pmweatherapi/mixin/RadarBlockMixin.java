@@ -14,7 +14,9 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.nullved.pmweatherapi.data.PMWExtras;
+import net.nullved.pmweatherapi.data.PMWStorages;
 import net.nullved.pmweatherapi.radar.RadarMode;
+import net.nullved.pmweatherapi.radar.storage.RadarStorageData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -49,6 +51,7 @@ public class RadarBlockMixin {
         if (!level.isClientSide()) {
             RadarMode currentMode = state.getValue(PMWExtras.RADAR_MODE);
             RadarMode newMode = currentMode.cycle();
+            PMWStorages.radars().get(level.dimension()).addAndSync(new RadarStorageData(pos, newMode));
             level.setBlockAndUpdate(pos, state.setValue(PMWExtras.RADAR_MODE, newMode));
         }
 

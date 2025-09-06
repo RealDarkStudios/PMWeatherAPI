@@ -11,25 +11,25 @@ import net.nullved.pmweatherapi.client.radar.RadarClientStorage;
 
 /**
  * The packet that syncs radars from the server to the client, using the Storages system
- * @since 0.15.1.1
+ * @since 0.15.3.3
  */
-public class S2CRadarsPacket extends S2CStoragePacket<RadarClientStorage> {
-    public static final CustomPacketPayload.Type<S2CRadarsPacket> TYPE = new Type<>(PMWeatherAPI.rl("s2c_radars"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, S2CRadarsPacket> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.COMPOUND_TAG, S2CRadarsPacket::tag, S2CRadarsPacket::new);
+public class S2CRadarPacket extends S2CStoragePacket<RadarClientStorage> {
+    public static final CustomPacketPayload.Type<S2CRadarPacket> TYPE = new Type<>(PMWeatherAPI.rl("s2c_radar"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CRadarPacket> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.COMPOUND_TAG, S2CRadarPacket::tag, S2CRadarPacket::new);
 
     /**
-     * Creates a new {@link S2CRadarsPacket}
+     * Creates a new {@link S2CRadarPacket}
      * @param tag The {@link CompoundTag} to send with the packet
-     * @since 0.15.1.1
+     * @since 0.15.3.3
      */
-    public S2CRadarsPacket(CompoundTag tag) {
+    public S2CRadarPacket(CompoundTag tag) {
         super(tag);
     }
 
     /**
      * Gets the {@link RadarClientStorage} that is receiving data
      * @return The {@link RadarClientStorage}
-     * @since 0.15.1.1
+     * @since 0.15.3.3
      */
     @Override
     public RadarClientStorage getStorage() {
