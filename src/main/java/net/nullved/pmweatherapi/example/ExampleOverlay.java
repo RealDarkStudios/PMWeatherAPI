@@ -1,7 +1,10 @@
 package net.nullved.pmweatherapi.example;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import dev.protomanly.pmweather.block.RadarBlock;
+import dev.protomanly.pmweather.block.entity.RadarBlockEntity;
 import dev.protomanly.pmweather.config.ClientConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -14,6 +17,7 @@ import net.nullved.pmweatherapi.client.render.RenderData;
 import net.nullved.pmweatherapi.radar.NearbyRadars;
 import net.nullved.pmweatherapi.radar.RadarMode;
 import net.nullved.pmweatherapi.storm.NearbyStorms;
+import net.nullved.pmweatherapi.util.ColorMaps;
 import org.joml.Vector3f;
 
 /**
@@ -30,28 +34,37 @@ public class ExampleOverlay implements IRadarOverlay {
         BlockEntity blockEntity = renderData.blockEntity();
         BlockPos pos = blockEntity.getBlockPos();
         RadarMode mode = getRadarMode(renderData);
+
         if (mode == RadarMode.REFLECTIVITY) {
             NearbyRadars.client().forRadarNearBlock(pos, 2048,
-                p -> renderMarker(bufferBuilder, p.offset(-pos.getX(), -pos.getY(), -pos.getZ()).getCenter()));
+                p -> renderMarker(bufferBuilder, renderData, p.offset(-pos.getX(), -pos.getY(), -pos.getZ()).getCenter(), 0xFF880000));
         } else if (mode == RadarMode.VELOCITY) {
             NearbyStorms.client().forStormNearBlock(pos, 2048,
-                s -> renderMarker(bufferBuilder, s.position.add(-pos.getX(), -pos.getY(), -pos.getZ())));
+                s -> renderMarker(bufferBuilder, renderData, s.position.add(-pos.getX(), -pos.getY(), -pos.getZ()), 0xFF008800));
         }
     }
 
     @Override
     public String getModID() {
-        return PMWeatherAPI.MODID + "_test";
+        return "example";
     }
 
-    private static void renderMarker(BufferBuilder bufferBuilder, Vec3 relative) {
+    private void renderMarker(BufferBuilder bufferBuilder, RenderData renderData, Vec3 relative, int color) {
         float resolution = ClientConfig.radarResolution;
         Vector3f radarPos = relative.add(0.5, 0.5, 0.5).toVector3f().mul(3 / (2 * resolution)).div(2048, 0, 2048).div(1.0F / resolution, 0.0F, 1.0F / resolution);
         Vector3f topLeft = (new Vector3f(-1.0F, 0.0F, -1.0F)).mul(0.015F).add(radarPos.x, 0.005F, radarPos.z);
         Vector3f bottomLeft = (new Vector3f(-1.0F, 0.0F, 1.0F)).mul(0.015F).add(radarPos.x, 0.005F, radarPos.z);
         Vector3f bottomRight = (new Vector3f(1.0F, 0.0F, 1.0F)).mul(0.015F).add(radarPos.x, 0.005F, radarPos.z);
         Vector3f topRight = (new Vector3f(1.0F, 0.0F, -1.0F)).mul(0.015F).add(radarPos.x, 0.005F, radarPos.z);
-        int color = 0xFFAAAAAA;
+
+        PoseStack pose = renderData.poseStack();
+        pose.pushPose();
+        pose.translate(0.5F, 1.05F, 0.5F);
+        pose.translate(radarPos.x, 0.005F, radarPos.z);
+        pose.scale(0.05F, 0.05F, 0.05F);
+        pose.mulPose(Axis.XP.rotationDegrees(180));
+
+        pose.popPose();
         bufferBuilder.addVertex(topLeft).setColor(color).addVertex(bottomLeft).setColor(color).addVertex(bottomRight).setColor(color).addVertex(topRight).setColor(color);
     }
 }

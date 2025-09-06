@@ -42,6 +42,7 @@ import java.util.function.Function;
  */
 public class RadarMode implements StringRepresentable, Comparable<RadarMode> {
     private static final LinkedHashMap<ResourceLocation, RadarMode> MODES = new LinkedHashMap<>();
+    private static boolean disableBaseRendering = false;
 
     /**
      * A "Null" Radar Mode mimicking Minecraft's missing texture.
@@ -57,7 +58,7 @@ public class RadarMode implements StringRepresentable, Comparable<RadarMode> {
      * A Radar Mode that is a copy of PMWeather's Reflectivity
      * @since 0.14.15.6
      */
-    public static final RadarMode REFLECTIVITY  = create(PMWeather.getPath("reflectivity"), prd -> {
+    public static final RadarMode REFLECTIVITY = create(PMWeather.getPath("reflectivity"), prd -> {
         Holder<Biome> biome = ((RadarBlockEntity) prd.renderData().blockEntity()).getNearestBiome(new BlockPos((int) prd.worldPos().x, (int) prd.worldPos().y, (int) prd.worldPos().z));
         if (biome != null) return ColorMaps.REFLECTIVITY.getWithBiome(prd.rdbz(), biome, prd.worldPos());
         else return ColorMaps.REFLECTIVITY.get(prd.rdbz());
@@ -99,6 +100,24 @@ public class RadarMode implements StringRepresentable, Comparable<RadarMode> {
         this.id = id;
         this.colorFunction = colorFunction;
         this.dotColor = dotColor;
+    }
+
+    /**
+     * Disables all rendering of pixels from any radar mode
+     * @param disable Whether to disable rendering or not
+     * @since 0.15.3.3
+     */
+    public static void disableBaseRendering(boolean disable) {
+        disableBaseRendering = disable;
+    }
+
+    /**
+     * Returns whether base rendering is disabled or not
+     * @return Base rendering disable state
+     * @since 0.15.3.3
+     */
+    public static boolean isBaseRenderingDisabled() {
+        return disableBaseRendering;
     }
 
     /**

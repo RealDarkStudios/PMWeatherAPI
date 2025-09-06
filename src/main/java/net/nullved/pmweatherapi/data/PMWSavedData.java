@@ -3,12 +3,14 @@ package net.nullved.pmweatherapi.data;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.nullved.pmweatherapi.radar.RadarStorage;
+import net.nullved.pmweatherapi.radar.storage.RadarStorage;
 
 /**
  * The {@link SavedData} for PMWeatherAPI
  * @since 0.14.15.3
+ * @deprecated Since 0.15.3.3 | For removal in 0.16.0.0 | Using new Storages system
  */
+@Deprecated(since = "0.15.3.3", forRemoval = true)
 public class PMWSavedData extends SavedData {
     private CompoundTag tag;
     private RadarStorage radarStorage;

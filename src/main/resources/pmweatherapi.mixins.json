@@ -6,9 +6,9 @@
   "refmap": "pmweatherapi.refmap.json",
   "mixins": [
     "BlockBehaviourMixin",
-    "PacketNBTFromClientMixin",
     "RadarBlockMixin",
-    "StormMixin"
+    "StormMixin",
+    "WSR88DCoreMixin"
   ],
   "client": [
     "RadarRendererMixin",

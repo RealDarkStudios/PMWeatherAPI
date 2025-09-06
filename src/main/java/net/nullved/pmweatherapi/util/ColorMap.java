@@ -107,8 +107,8 @@ public class ColorMap {
         if (rn.contains("ocean") || rn.contains("river")) startColor = new Color(biome.value().getWaterColor());
         else if (rn.contains("beach") || rn.contains("desert")) {
             if (rn.contains("badlands")) startColor = new Color(214, 111, 42);
-            else startColor = new Color(biome.value().getGrassColor(worldPos.x, worldPos.z));
-        } else startColor = new Color(227, 198, 150);
+            else startColor = new Color(227, 198, 150);
+        } else startColor = new Color(biome.value().getGrassColor(worldPos.x, worldPos.z));
 
         if (val < firstThreshold) {
             return lerp(Math.clamp(val / (firstThreshold - min), 0.0F, 1.0F), startColor, segments.firstEntry().getValue().to);
