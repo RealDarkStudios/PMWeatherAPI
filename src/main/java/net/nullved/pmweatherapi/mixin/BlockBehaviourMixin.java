@@ -33,7 +33,7 @@ public class BlockBehaviourMixin {
     private static void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston, CallbackInfo ci) {
         if (state.getBlock() instanceof RadarBlock) {
             RadarServerStorage radarStorage = PMWStorages.radars().get(level.dimension());
-            radarStorage.addAndSync(new RadarStorageData(pos, state.getValue(PMWExtras.RADAR_MODE)));
+            radarStorage.addAndSync(new RadarStorageData(pos, state.getValue(PMWExtras.RADAR_MODE), state.getValue(RadarBlock.ON)));
         } else if (state.getBlock() instanceof MetarBlock) {
             // Get Metar data
             WeatherHandler weatherHandler = GameBusEvents.MANAGERS.get(level.dimension());

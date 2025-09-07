@@ -592,7 +592,7 @@ public class RadarRendererMixin {
         bufferBuilder.addVertex(topLeft).setColor(color).addVertex(bottomLeft).setColor(color).addVertex(bottomRight).setColor(color).addVertex(topRight).setColor(color);
 
         // PMWeatherAPI: RadarOverlays callback
-        RadarOverlays.renderOverlays(renderData, bufferBuilder, canRender);
+        if (!ClientConfig.radarDebugging || !PMWClientConfig.disableOverlaysWhenDebugging) RadarOverlays.renderOverlays(renderData, bufferBuilder, canRender);
 
         matrix4fStack.mul(poseStack.last().pose().invert());
         matrix4fStack.translate(-0.5F, -1.05F, -0.5F);

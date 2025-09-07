@@ -37,9 +37,13 @@ public class IDOverlay implements IRadarOverlay {
         poseStack.pushPose();
         poseStack.translate((side.x * scale) - 0.5F * (scale - 1), 1.055f, (side.z * scale) - 0.5F * (scale - 1));
         poseStack.mulPose(Axis.YN.rotationDegrees(side.rotation));
+        poseStack.mulPose(Axis.XP.rotationDegrees(90));
         poseStack.scale(0.01f, 0.01f, 0.01f);
 
         renderText(Component.literal(mode.getId().toString()), renderData, poseStack);
+
+        poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+
 
         float lineHeight = 8.0f;
         float offset = lineHeight;
@@ -47,6 +51,7 @@ public class IDOverlay implements IRadarOverlay {
             poseStack.pushPose();
             poseStack.translate(0, 0, offset);
             poseStack.scale(0.6f, 0.6f, 0.6f);
+            poseStack.mulPose(Axis.XP.rotationDegrees(90));
 
             renderText(Component.literal(overlay.get().getID().toString()).withColor(0x888888), renderData, poseStack);
 

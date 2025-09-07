@@ -18,11 +18,21 @@ import net.nullved.pmweatherapi.storage.data.StorageData;
  */
 public class RadarStorageData extends StorageData {
     public static final ResourceLocation ID = PMWeatherAPI.rl("radar");
-    private RadarMode radarMode;
+    private final RadarMode radarMode;
+    private final boolean on;
 
-    public RadarStorageData(BlockPos pos, RadarMode radarMode) {
+    public RadarStorageData(BlockPos pos, RadarMode radarMode, boolean on) {
         super(pos);
         this.radarMode = radarMode;
+        this.on = on;
+    }
+
+    public RadarMode getRadarMode() {
+        return radarMode;
+    }
+
+    public boolean isOn() {
+        return on;
     }
 
     @Override
@@ -34,6 +44,7 @@ public class RadarStorageData extends StorageData {
     public CompoundTag serializeToNBT() {
         CompoundTag tag = super.serializeToNBT();
         tag.putString("radar_mode", radarMode.getSerializedName());
+        tag.putBoolean("on", on);
         return tag;
     }
 
@@ -42,9 +53,10 @@ public class RadarStorageData extends StorageData {
 
         if (bp != null) {
             RadarMode mode = RadarMode.get(tag.getString("radar_mode"));
-            return new RadarStorageData(bp, mode);
+            boolean on = tag.getBoolean("on");
+            return new RadarStorageData(bp, mode, on);
         } else {
-            return new RadarStorageData(NbtUtils.readBlockPos(tag, "").orElseThrow(() -> new IllegalArgumentException("Could not read BlockPos in RadarStorageData!")), RadarMode.get(tag.getString("radar_mode")));
+            return new RadarStorageData(NbtUtils.readBlockPos(tag, "").orElseThrow(() -> new IllegalArgumentException("Could not read BlockPos in RadarStorageData!")), RadarMode.get(tag.getString("radar_mode")), !tag.contains("on") || tag.getBoolean("on"));
         }
     }
 }
