@@ -51,7 +51,7 @@ public class RadarBlockMixin {
         if (!level.isClientSide()) {
             RadarMode currentMode = state.getValue(PMWExtras.RADAR_MODE);
             RadarMode newMode = currentMode.cycle();
-            PMWStorages.radars().get(level.dimension()).addAndSync(new RadarStorageData(pos, newMode));
+            PMWStorages.radars().get(level.dimension()).addAndSync(new RadarStorageData(pos, newMode, state.getValue(RadarBlock.ON)));
             level.setBlockAndUpdate(pos, state.setValue(PMWExtras.RADAR_MODE, newMode));
         }
 

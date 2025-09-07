@@ -11,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.event.level.ChunkWatchEvent;
 import net.nullved.pmweatherapi.PMWeatherAPI;
 import net.nullved.pmweatherapi.client.data.IClientStorage;
@@ -26,6 +25,7 @@ import net.nullved.pmweatherapi.storage.data.IStorageData;
 import net.nullved.pmweatherapi.storage.data.StorageData;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -127,6 +127,14 @@ public abstract class PMWStorage<D extends StorageData> implements IStorage<D> {
         return data.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
     }
 
+    /**
+     * Gets a {@link Set} of every {@link IStorageData} within a given radius of the base {@link BlockPos}
+     *
+     * @param base The base {@link BlockPos}
+     * @param radius The radius of the search range
+     * @return All {@link IStorageData} within {@code radius} blocks of the base {@link BlockPos}
+     * @since 0.15.3.3
+     */
     @Override
     public Set<D> getAllWithinRange(BlockPos base, double radius) {
         int chunks = (int) Math.ceil(radius / 16.0F) + 1;
@@ -155,6 +163,13 @@ public abstract class PMWStorage<D extends StorageData> implements IStorage<D> {
         return data.getOrDefault(pos, Set.of());
     }
 
+    /**
+     * Gets the {@link Set} of {@link IStorageData} within this and adjacent {@link ChunkPos}'
+     *
+     * @param pos The middle {@link ChunkPos}
+     * @return A {@link Set} of the {@link IStorageData} in this and adjacent chunks
+     * @since 0.15.3.3
+     */
     @Override
     public Set<D> getInAdjacentChunks(ChunkPos pos) {
         Set<D> set = new HashSet<>();
@@ -164,6 +179,55 @@ public abstract class PMWStorage<D extends StorageData> implements IStorage<D> {
             }
         }
         return set;
+    }
+
+
+    /**
+     * Executes a {@link Consumer} for every {@link IStorageData} saved in this {@link IStorage}, regardless of {@link ChunkPos}
+     *
+     * @param consumer The function to run for each {@link IStorageData}
+     * @since 0.15.3.3-rc2
+     */
+    @Override
+    public void forAll(Consumer<D> consumer) {
+        getAll().forEach(consumer);
+    }
+
+    /**
+     * Executes a {@link Consumer} for every {@link IStorageData} within a given radius of the base {@link BlockPos}
+     *
+     * @param base The base {@link BlockPos}
+     * @param radius The radius of the search range
+     * @param consumer The function to run for each {@link IStorageData}
+     * @since 0.15.3.3-rc2
+     */
+    @Override
+    public void forAllWithinRange(BlockPos base, double radius, Consumer<D> consumer) {
+        getAllWithinRange(base, radius).forEach(consumer);
+    }
+
+    /**
+     * Executes a {@link Consumer} for each {@link IStorageData} in this {@link ChunkPos}
+     *
+     * @param pos The {@link ChunkPos} to search
+     * @param consumer The function to run for each {@link IStorageData}
+     * @since 0.15.3.3-rc2
+     */
+    @Override
+    public void forInChunk(ChunkPos pos, Consumer<D> consumer) {
+        getInChunk(pos).forEach(consumer);
+    }
+
+    /**
+     * Executes a {@link Consumer} for each {@link IStorageData} within this and adjacent {@link ChunkPos}'
+     *
+     * @param pos The middle {@link ChunkPos}
+     * @param consumer The function to run for each {@link IStorageData}
+     * @since 0.15.3.3-rc2
+     */
+    @Override
+    public void forInAdjacentChunks(ChunkPos pos, Consumer<D> consumer) {
+        getInAdjacentChunks(pos).forEach(consumer);
     }
 
     /**

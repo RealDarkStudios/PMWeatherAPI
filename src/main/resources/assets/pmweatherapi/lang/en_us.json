@@ -1,6 +1,8 @@
 {
   "pmweatherapi.configuration.disable_custom_radar_mode_rendering": "Disable Custom Radar Mode Rendering",
   "pmweatherapi.configuration.disable_custom_radar_mode_rendering.tooltip": "Disables all custom radar modes from rendering. Falls back to PMWeather for Reflectivity and Velocity. Any custom radar modes will not appear, but still be cycled through",
+  "pmweatherapi.configuration.disable_overlays_when_debugging": "Disable Overlays when Debugging",
+  "pmweatherapi.configuration.disable_overlays_when_debugging.tooltip": "Disables all overlays from rendering when client radar debugging is on",
   "pmweatherapi.configuration.show_radar_mode_id": "Show Radar Mode ID",
   "pmweatherapi.configuration.show_radar_mode_id.tooltip": "Enables an overlay to show the current radar mode's ID",
   "pmweatherapi.configuration.radar_mode_id_side": "Radar Mode ID Side",

@@ -12,6 +12,7 @@ import net.nullved.pmweatherapi.storage.data.StorageData;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * The interface defining a Storage such as {@link RadarStorage}
@@ -40,6 +41,11 @@ public interface IStorage<D extends IStorageData> {
     Set<D> getAllWithinRange(BlockPos base, double radius);
     Set<D> getInChunk(ChunkPos pos);
     Set<D> getInAdjacentChunks(ChunkPos pos);
+
+    void forAll(Consumer<D> consumer);
+    void forAllWithinRange(BlockPos base, double radius, Consumer<D> consumer);
+    void forInChunk(ChunkPos pos, Consumer<D> consumer);
+    void forInAdjacentChunks(ChunkPos pos, Consumer<D> consumer);
 
     boolean shouldRecalculate(ChunkPos pos);
 
