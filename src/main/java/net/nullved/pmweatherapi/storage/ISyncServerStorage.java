@@ -6,7 +6,7 @@ import net.nullved.pmweatherapi.storage.data.StorageData;
 
 import java.util.Collection;
 
-public interface ISyncServerStorage<D extends StorageData> extends IServerStorage<D> {
+public interface ISyncServerStorage<D extends IStorageData> extends IServerStorage<D> {
     /**
      * Shorthand for calling {@link #add(IStorageData)} and {@link #syncAdd(IStorageData)}
      * @param data The {@link IStorageData} to add and sync

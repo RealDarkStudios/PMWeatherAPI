@@ -18,6 +18,7 @@ import net.nullved.pmweatherapi.client.data.PMWClientStorages;
 import net.nullved.pmweatherapi.data.PMWStorages;
 import net.nullved.pmweatherapi.storage.IServerStorage;
 import net.nullved.pmweatherapi.storage.IStorage;
+import net.nullved.pmweatherapi.storage.data.IStorageData;
 import net.nullved.pmweatherapi.storage.data.StorageData;
 import net.nullved.pmweatherapi.util.PMWUtils;
 
@@ -52,7 +53,7 @@ public class StoragesCommand {
         );
     }
 
-    private static <D extends StorageData> int clientAll(CommandContext<CommandSourceStack> ctx) {
+    private static <D extends IStorageData> int clientAll(CommandContext<CommandSourceStack> ctx) {
         BiFunction<IStorage<D>, Player, Set<D>> func;
         try {
             final int radius = ctx.getArgument("radius", Integer.class);
@@ -64,7 +65,7 @@ public class StoragesCommand {
         return execClient(ctx, func);
     }
 
-    private static <D extends StorageData> int serverAll(CommandContext<CommandSourceStack> ctx) {
+    private static <D extends IStorageData> int serverAll(CommandContext<CommandSourceStack> ctx) {
         BiFunction<IStorage<D>, Player, Set<D>> func;
         try {
             final int radius = ctx.getArgument("radius", Integer.class);
@@ -84,7 +85,7 @@ public class StoragesCommand {
         return exec(ctx, (stg, plr) -> stg.getInAdjacentChunks(new ChunkPos(plr.blockPosition())));
     }
 
-    private static <D extends StorageData> int exec(CommandContext<CommandSourceStack> ctx, BiFunction<IStorage<D>, Player, Set<D>> blocksFunction) {
+    private static <D extends IStorageData> int exec(CommandContext<CommandSourceStack> ctx, BiFunction<IStorage<D>, Player, Set<D>> blocksFunction) {
         PMWeatherAPI.LOGGER.info("Checking for nearby storages...");
 
         Player plr = ctx.getSource().getPlayer();
@@ -120,7 +121,7 @@ public class StoragesCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static <D extends StorageData> int execClient(CommandContext<CommandSourceStack> ctx, BiFunction<IStorage<D>, Player, Set<D>> blocksFunction) {
+    private static <D extends IStorageData> int execClient(CommandContext<CommandSourceStack> ctx, BiFunction<IStorage<D>, Player, Set<D>> blocksFunction) {
         PMWeatherAPI.LOGGER.info("Checking for nearby storages...");
 
         Player plr = ctx.getSource().getPlayer();

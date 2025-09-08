@@ -4,6 +4,8 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -29,6 +31,8 @@ import net.nullved.pmweatherapi.radar.RadarMode;
 import net.nullved.pmweatherapi.radar.storage.*;
 import net.nullved.pmweatherapi.storage.data.BlockPosData;
 import net.nullved.pmweatherapi.storage.data.StorageDataManager;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 
@@ -47,6 +51,23 @@ public class PMWeatherAPI {
         modEventBus.addListener(this::registerPayloads);
 
         LOGGER.info("Initialized PMWAPI");
+
+        if (ModList.get().isLoaded("pmweather")) {
+            ModContainer pmweather = ModList.get().getModContainerById("pmweather").get();
+
+            ArtifactVersion pmweatherVer = pmweather.getModInfo().getVersion();
+            String pmweatherVerS = pmweatherVer.getMajorVersion() + "." + pmweatherVer.getMinorVersion() + "." + pmweatherVer.getIncrementalVersion();
+            String pmweatherExpected = "0.15.3-1.21.1-alpha";
+            int pmweatherCompared = pmweatherVer.compareTo(new DefaultArtifactVersion(pmweatherExpected));
+
+            if (pmweatherCompared == 0) {
+                PMWeatherAPI.LOGGER.info("Found PMWeather Version {}", pmweatherExpected.split("-")[0]);
+            } else if (pmweatherCompared > 0) {
+                PMWeatherAPI.LOGGER.warn("Found newer PMWeather Version {} than supported ({})! Support is NOT guaranteed!", pmweatherVerS, pmweatherExpected.split("-")[0]);
+            } else {
+                PMWeatherAPI.LOGGER.info("Found old PMWeather Version {}! Please update PMWeather to version {}!", pmweatherVerS, pmweatherExpected.split("-")[0]);
+            }
+        }
 
         if (FMLEnvironment.dist.isClient()) {
             modContainer.registerConfig(ModConfig.Type.CLIENT, PMWClientConfig.SPEC);

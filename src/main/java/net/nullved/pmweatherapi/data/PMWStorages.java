@@ -86,7 +86,7 @@ public class PMWStorages {
      * @param <T> The {@link IServerStorage}
      * @since 0.15.3.3
      */
-    public static <D extends StorageData, T extends IServerStorage<D>> Optional<StorageInstance<D, T>> get(ResourceLocation location, Class<T> clazz) {
+    public static <D extends IStorageData, T extends IServerStorage<D>> Optional<StorageInstance<D, T>> get(ResourceLocation location, Class<T> clazz) {
         return STORAGE_INSTANCES.get(location).cast(clazz);
     }
 

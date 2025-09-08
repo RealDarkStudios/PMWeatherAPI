@@ -114,7 +114,7 @@ public class PMWClientStorages {
      * @param <T> The {@link IClientStorage}
      * @since 0.15.3.3
      */
-    public static <D extends StorageData, T extends IClientStorage<D>> Optional<ClientStorageInstance<D, T>> get(ResourceLocation location, Class<T> clazz) {
+    public static <D extends IStorageData, T extends IClientStorage<D>> Optional<ClientStorageInstance<D, T>> get(ResourceLocation location, Class<T> clazz) {
         return get(location).cast(clazz);
     }
 
@@ -154,7 +154,7 @@ public class PMWClientStorages {
      * @param <C> The {@link IClientStorage}
      * @since 0.15.3.3
      */
-    public static <D extends StorageData, C extends IClientStorage<D>> void registerStorage(ResourceLocation id, Class<C> clazz, Function<ClientLevel, C> creator) {
+    public static <D extends IStorageData, C extends IClientStorage<D>> void registerStorage(ResourceLocation id, Class<C> clazz, Function<ClientLevel, C> creator) {
         ClientStorageInstance<D, C> instance = new ClientStorageInstance<>(id, clazz, creator);
         STORAGE_INSTANCES.put(id, instance);
     }

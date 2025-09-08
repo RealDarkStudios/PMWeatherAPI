@@ -22,7 +22,7 @@ import java.util.function.Function;
  * @param <C> The {@link IClientStorage}
  * @since 0.15.3.3
  */
-public class ClientStorageInstance<D extends StorageData, C extends IClientStorage<D>> {
+public class ClientStorageInstance<D extends IStorageData, C extends IClientStorage<D>> {
     private final ResourceLocation id;
     private final Class<C> clazz;
     private final Function<ClientLevel, C> creator;
@@ -46,7 +46,7 @@ public class ClientStorageInstance<D extends StorageData, C extends IClientStora
         this.storage = storage;
     }
 
-    public <F extends StorageData, O extends IClientStorage<F>> Optional<ClientStorageInstance<F, O>> cast(Class<O> oclazz) {
+    public <F extends IStorageData, O extends IClientStorage<F>> Optional<ClientStorageInstance<F, O>> cast(Class<O> oclazz) {
         if (oclazz.isAssignableFrom(clazz)) {
             @SuppressWarnings("unchecked")
             ClientStorageInstance<F, O> casted = new ClientStorageInstance<>(id(), oclazz, cl -> (O) creator.apply(cl));

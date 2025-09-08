@@ -6,6 +6,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.nullved.pmweatherapi.radar.NearbyRadars;
 import net.nullved.pmweatherapi.storage.IStorage;
+import net.nullved.pmweatherapi.storage.data.IStorageData;
 import net.nullved.pmweatherapi.storage.data.StorageData;
 
 import java.util.HashSet;
@@ -55,7 +56,7 @@ public class PMWUtils {
      * @return A {@link Set} of {@link BlockPos} that are in the {@link IStorage} around the base {@link BlockPos}
      * @since 0.15.3.3
      */
-    public static <D extends StorageData> Set<D> storageCornerAdjacent(IStorage<D> storage, BlockPos pos) {
+    public static <D extends IStorageData> Set<D> storageCornerAdjacent(IStorage<D> storage, BlockPos pos) {
         HashSet<D> set = new HashSet<>();
 
         for (D data: storage.getInAdjacentChunks(new ChunkPos(pos))) {

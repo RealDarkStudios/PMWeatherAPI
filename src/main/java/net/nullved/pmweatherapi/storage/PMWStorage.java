@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
  * @see IClientStorage
  * @since 0.15.3.3
  */
-public abstract class PMWStorage<D extends StorageData> implements IStorage<D> {
+public abstract class PMWStorage<D extends IStorageData> implements IStorage<D> {
 
     /**
      * A {@link Set} of {@link IStorageData} split up by {@link ChunkPos}
