@@ -144,7 +144,7 @@ public class PMWStorages {
      * @param <S> The {@link IServerStorage}
      * @since 0.15.3.3
      */
-    public static <D extends StorageData, S extends IServerStorage<D>> void registerStorage(ResourceLocation id, Class<S> clazz, Function<ServerLevel, S> creator) {
+    public static <D extends IStorageData, S extends IServerStorage<D>> void registerStorage(ResourceLocation id, Class<S> clazz, Function<ServerLevel, S> creator) {
         StorageInstance<D, S> instance = new StorageInstance<>(id, clazz, creator);
         STORAGE_INSTANCES.put(id, instance);
     }
